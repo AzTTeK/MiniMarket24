@@ -50,6 +50,7 @@ Se realizó el análisis completo de toda la documentación existente del proyec
 
 ### 11 de abril de 2026 — Sesión 2: Reorganización Modular Estricta
 
+
 **¿Qué se hizo?**
 
 Se ejecutó la reestructuración física del repositorio para alinearse al 100% con los entregables del caso práctico:
@@ -61,7 +62,7 @@ Se ejecutó la reestructuración física del repositorio para alinearse al 100% 
 **Cambios técnicos:**
 - Actualización de `pyproject.toml` para soportar las nuevas rutas de módulos.
 - Actualización de `README.md` con la nueva arquitectura modular de 3 pilares.
-- Re-staged de todos los archivos para asegurar un primer commit limpio con la estructura definitiva.
+- Re-staged de todos los archivos para asegurar un primer commit limpio con la estructura definitiva
 
 **Próximos pasos:**
 - Realizar el primer commit con la estructura modular confirmada.
