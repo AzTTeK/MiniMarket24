@@ -19,9 +19,12 @@ Se realizó el análisis completo de toda la documentación existente del proyec
 
 1. **Dataset de entrenamiento**: Se seleccionó el dataset **"Store Sales - Time Series Forecasting"** de **Corporación Favorita** (Kaggle). Este dataset contiene datos de ventas diarias de un retailer de abarrotes ecuatoriano con múltiples tiendas y familias de productos, lo que lo hace ideal para simular el escenario multi-sucursal de MiniMarket La 24. Los datos diarios se agregarán a nivel semanal para alinearse con el ciclo de reposición del negocio.
 
-2. **Base de datos**: Se decidió usar **Supabase** (PostgreSQL gestionado en la nube) en lugar de PostgreSQL dockerizado localmente. Razones: simplifica la configuración del entorno de desarrollo, ofrece autenticación integrada (útil para el módulo Auth), y proporciona una API REST auto-generada. La integración con Supabase se realizará en fases posteriores; la Fase 2 (ML Engine) trabaja directamente con los archivos CSV del dataset.
+2. **Arquitectura Modular (Rectificación)**: Se ha decidido implementar una **Arquitectura Modular estricta** (NO Hexagonal) para cumplir al 100% con los entregables del caso práctico. El sistema se divide en tres pilares:
+   - **Módulo Analítico**: Responsable exclusivo del procesamiento de datos de IA y generación de predicciones.
+   - **Lógica de Negocio**: Centraliza las reglas, la gestión de alertas y la integración con Supabase.
+   - **Visualización**: Dashboard web enfocado en la toma de decisiones.
 
-3. **Scope del MVP**: Se decidió implementar **todos los 9 requerimientos funcionales** del SRS, priorizando RF-01 a RF-05 (ETL, validación de datos, predicción, alertas, visualización de tendencias) en las primeras iteraciones, y RF-06 a RF-09 (registro de venta real, reentrenamiento, ajuste manual, comparación entre sucursales) en iteraciones posteriores. El objetivo es entregar un sistema completo y funcional.
+3. **Base de Datos**: Se confirma el uso de **Supabase** como proveedor oficial, integrándolo directamente en el Módulo de Lógica de Negocio.
 
 4. **Estrategia de desarrollo**: Se definió un roadmap de 6 fases:
    - Fase 1: Fundación del proyecto (estructura del repo, configuración del entorno)

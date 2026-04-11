@@ -1,16 +1,12 @@
-# DEMAND-24 — Sistema Inteligente de Predicción de Demanda
+## 🏗️ Arquitectura Modular
 
-> **MiniMarket La 24 S.A.S.** — Prototipo funcional de predicción de demanda semanal por SKU con modelo de Machine Learning, alertas de quiebre de stock y dashboard de visualización.
-
-## 🏗️ Arquitectura
-
-El sistema sigue una **arquitectura hexagonal (Ports & Adapters)** con tres módulos principales:
+El sistema está diseñado bajo una arquitectura modular estricta, dividida en tres pilares fundamentales que garantizan el desacoplamiento y la escalabilidad del prototipo:
 
 | Módulo | Responsabilidad | Tecnología |
 |--------|----------------|-----------|
-| **Módulo de Datos** | ETL, validación, repositorios | Python + SQLAlchemy + Pandas |
-| **Módulo Analítico** | Entrenamiento, predicción, evaluación | scikit-learn + XGBoost + MLflow |
-| **Módulo de Presentación** | API REST + Dashboard web | FastAPI + React.js + Recharts |
+| **Módulo Analítico** | Corazón del sistema: modelado de IA, entrenamiento y generación de predicciones. | Python + statsmodels + XGBoost |
+| **Lógica de Negocio** | Gestión de datos, motor de alertas, autenticación y reglas de negocio. | FastAPI + Supabase |
+| **Visualización** | Interfaz de usuario dinámica para la toma de decisiones basada en datos. | React.js + Recharts |
 
 **Base de datos**: [Supabase](https://supabase.com) (PostgreSQL gestionado)  
 **Dataset de entrenamiento**: [Store Sales - Corporación Favorita](https://www.kaggle.com/competitions/store-sales-time-series-forecasting) (Kaggle)
@@ -19,25 +15,17 @@ El sistema sigue una **arquitectura hexagonal (Ports & Adapters)** con tres mód
 
 ```
 demand-24/
-├── backend/
-│   ├── api/                  # FastAPI routers
-│   ├── auth/                 # Autenticación (Supabase Auth)
-│   ├── etl/                  # Pipeline ETL
-│   ├── ml_engine/            # Motor de Machine Learning
-│   ├── alert_engine/         # Motor de alertas
-│   ├── models/               # SQLAlchemy ORM
-│   ├── schemas/              # Pydantic DTOs
-│   ├── repositories/         # Repository pattern
-│   ├── config/               # Configuración centralizada
-│   └── tests/                # Pruebas unitarias e integración
-├── frontend/                 # React + Vite + Recharts
-├── data/                     # Datasets (NO versionado)
-│   └── raw/                  # CSVs de Kaggle
-├── notebooks/                # Jupyter notebooks (EDA)
-├── docker-compose.yml
+├── modulo_analitico/         # Procesamiento de IA y ML Engine
+├── logica_negocio/           # Backend, API y Core de Negocio
+├── visualizacion/            # Frontend y Dashboard Web
+├── data/                     # Datasets descargados (NO versionado)
+│   └── raw/                  # CSVs originales de Kaggle
+├── notebooks/                # Jupyter notebooks para experimentación
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
+
 
 ## 🚀 Inicio Rápido
 
