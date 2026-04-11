@@ -1,0 +1,71 @@
+# ===========================
+# DEMAND-24 .gitignore
+# ===========================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# ---------- Virtual Environments ----------
+venv/
+.venv/
+env/
+
+# ---------- IDE ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------- Environment & Secrets ----------
+.env
+*.pem
+*.key
+
+# ---------- Documentación interna ----------
+Documents/
+
+# ---------- Data (datasets too large for Git) ----------
+data/raw/
+data/processed/
+*.csv
+!backend/ml_engine/config/*.csv
+
+# ---------- ML Artifacts ----------
+mlflow-data/
+mlruns/
+*.pkl
+*.joblib
+*.h5
+
+# ---------- Node / Frontend ----------
+node_modules/
+frontend/dist/
+frontend/build/
+.next/
+
+# ---------- Docker ----------
+*.log
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+
+# ---------- Test / Coverage ----------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ---------- Gemini Agent ----------
+.agents/
