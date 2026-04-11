@@ -1,4 +1,4 @@
-## 🏗️ Arquitectura Modular
+## Arquitectura Modular
 
 El sistema está diseñado bajo una arquitectura modular estricta, dividida en tres pilares fundamentales que garantizan el desacoplamiento y la escalabilidad del prototipo:
 
@@ -15,10 +15,10 @@ El sistema está diseñado bajo una arquitectura modular estricta, dividida en t
 
 ```
 demand-24/
-├── modulo_analitico/         # Procesamiento de IA y ML Engine
-├── logica_negocio/           # Backend, API y Core de Negocio
+├── modulo_analitico/         # Procesamiento de IA y ML 
+├── logica_negocio/           # Backend y API´s
 ├── visualizacion/            # Frontend y Dashboard Web
-├── data/                     # Datasets descargados (NO versionado)
+├── data/                     # Datasets descargados 
 │   └── raw/                  # CSVs originales de Kaggle
 ├── notebooks/                # Jupyter notebooks para experimentación
 ├── .env.example
@@ -58,12 +58,8 @@ pip install -r backend/requirements.txt
 
 ## 👥 Equipo
 
-- Mateo Reyes – T00077079
 - Elías José Blanco Gil – T00078817  
+- Mateo Reyes – T00077079
 - Sebastian Valencia Montesino – T00078248
 - Jose Pereira Acuña – T00079768
 - Fabián Corpas Castro – T00064976
-
-## 📄 Licencia
-
-Proyecto académico — Universidad · Ingeniería de Software · 2026
