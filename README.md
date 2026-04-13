@@ -11,7 +11,7 @@ El sistema está diseñado bajo una arquitectura modular estricta, dividida en t
 **Base de datos**: [Supabase](https://supabase.com) (PostgreSQL gestionado)  
 **Dataset de entrenamiento**: [Store Sales - Corporación Favorita](https://www.kaggle.com/competitions/store-sales-time-series-forecasting) (Kaggle)
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 demand-24/
@@ -27,7 +27,7 @@ demand-24/
 ```
 
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ### Prerrequisitos
 - Python 3.11+
@@ -56,7 +56,7 @@ pip install -r backend/requirements.txt
 # Descargar desde: https://www.kaggle.com/competitions/store-sales-time-series-forecasting
 ```
 
-## 👥 Equipo
+## Equipo
 
 - Elías José Blanco Gil – T00078817  
 - Mateo Reyes – T00077079
