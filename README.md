@@ -1,3 +1,5 @@
+## HAY QUE ACTUALIZARLO
+
 ## Arquitectura Modular
 
 El sistema está diseñado bajo una arquitectura modular estricta, dividida en tres pilares fundamentales que garantizan el desacoplamiento y la escalabilidad del prototipo:
