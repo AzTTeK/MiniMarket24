@@ -31,7 +31,6 @@ desktop.ini
 
 # ---------- Environment & Secrets ----------
 .env
-.env.example
 *.pem
 *.key
 
