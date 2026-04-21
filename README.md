@@ -5,7 +5,7 @@
 
 ---
 
-## 📊 Estado del Proyecto
+##  Estado del Proyecto
 
 | Fase | Tarea | Estado |
 | :--- | :--- | :--- |
@@ -86,5 +86,5 @@ MiniMarket24/
 
 ---
 
-## 📄 Documentación
+##  Documentación
 Para detalles técnicos sobre requerimientos, modelos de datos y decisiones arquitectónicas, consulta la carpeta [Documents/](file:///Documents/).
