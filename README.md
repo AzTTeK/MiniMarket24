@@ -1,4 +1,4 @@
-# DEMAND-24 — Sistema Inteligente de Predicción de Demanda
+# DEMAND-24 - Sistema Inteligente de Predicción de Demanda
 
 *Solución modular para el manejo de inventarios y predicción de demanda basada en Inteligencia Artificial.*
 
