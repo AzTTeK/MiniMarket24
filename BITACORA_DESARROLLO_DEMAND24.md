@@ -901,3 +901,56 @@ Execution Time:         ~120 seconds
 
 *Este documento se actualizará al final de cada sesión de trabajo.*
 
+---
+
+## Fase 3 — Módulo de Datos (Persistencia y Repositorios)
+
+### 21 de abril de 2026 — Sesión 5: Integración con Supabase y Repository Pattern
+
+**¿Qué se hizo?**
+
+Se completó la Fase 3 del proyecto, estableciendo la capa de persistencia y el patrón Repository para desacoplar la lógica de negocio de la base de datos. Se integró el motor de ML (DemandPredictor) con Supabase para permitir el almacenamiento de predicciones, métricas y metadata de modelos.
+
+**Hitos alcanzados:**
+
+1. **Infraestructura Supabase**:
+   - Creación del proyecto `DEMAND24` en Supabase.
+   - Aplicación del esquema SQL inicial (tablas: `sku`, `prediction`, `evaluation_fold`, `model_version`).
+   - Configuración de variables de entorno para conexión segura.
+
+2. **Capa de Datos (SQLAlchemy + Pydantic)**:
+   - **Modelos ORM**: Implementación de clases SQLAlchemy con soporte para `JSONB` (Postgres) y fallback a `JSON` (SQLite).
+   - **DTOs (Schemas)**: Implementación de esquemas Pydantic para validación estricta de entrada/salida (Crear, Leer, Actualizar).
+   - **Repository Pattern**: Creación de repositorios especializados para cada entidad, centralizando la lógica de acceso a datos y manejo de transacciones.
+
+3. **Integración Analítica**:
+   - Modificación de `DemandPredictor` para incluir métodos de persistencia: `save_predictions_to_db` y `save_training_results_to_db`.
+   - Implementación de 'Lazy Imports' para evitar dependencias circulares y mantener el desacoplamiento entre el módulo analítico y el de datos.
+
+4. **Calidad y Testing**:
+   - Creación de una suite de **53 nuevos tests unitarios e integrales** en `logica_negocio/tests/`.
+   - Uso de `test_db` (SQLite en memoria) para tests rápidos y aislados.
+   - **Total Tests**: 82/82 PASSING (100% éxito).
+
+**Decisiones técnicas tomadas:**
+
+- **Compatibilidad SQLite**: Se ajustaron las llaves primarias de `BigInteger` a `Integer` en los modelos ORM para permitir el autoincremento nativo de SQLite durante los tests, manteniendo la integridad con el `BIGSERIAL` de Postgres en producción.
+- **Bulk Operations**: Se priorizó el uso de `add_all()` y operaciones masivas en los repositorios para optimizar el rendimiento al guardar grandes volúmenes de predicciones.
+- **Desacoplamiento**: El módulo analítico solo conoce la base de datos si el caller le inyecta un `db_session`, cumpliendo con la Regla I.
+
+**Archivos implementados/modificados:**
+
+- `logica_negocio/database/models/` — 5 archivos (base, sku, prediction, evaluation_fold, model_version)
+- `logica_negocio/database/schemas/` — 5 archivos
+- `logica_negocio/database/repositories/` — 5 archivos
+- `modulo_analitico/predictor.py` — Integración de persistencia.
+- `logica_negocio/tests/` — Suite de 53 tests.
+
+**Siguiente sesión:**
+Iniciar **Fase 4: REST API (FastAPI)** para exponer estos datos y procesos a través de endpoints seguros.
+
+---
+
+**Estado Final de Sesión 5:**
+- ✅ Fase 3 COMPLETADA (100%)
+- ✅ 82/82 Tests PASS
