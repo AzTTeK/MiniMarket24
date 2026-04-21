@@ -49,8 +49,9 @@ line-length = 100
 select = ["E", "F", "W", "I", "N", "UP"]
 
 [tool.pytest.ini_options]
-testpaths = ["backend/tests"]
+testpaths = ["modulo_analitico/tests", "logica_negocio/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "--cov=logica_negocio --cov=modulo_analitico --cov-report=term-missing"
+
