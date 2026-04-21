@@ -9,16 +9,16 @@
 
 | Fase | Tarea | Estado |
 | :--- | :--- | :--- |
-| **1** | **Fundación del Proyecto** | ✅ Completada |
-| **2** | **Módulo Analítico (ML Engine)** | ✅ Completada |
-| **3** | **Módulo de Datos (Persistencia / Supabase)** | ✅ Completada |
-| **4** | **Orquestación & API (FastAPI)** | ⏳ En proceso |
-| **5** | **Dashboard Visual (React)** | ⏳ Pendiente |
-| **6** | **Integración & Despliegue** | ⏳ Pendiente |
+| **1** | **Fundación del Proyecto** |  Completada |
+| **2** | **Módulo Analítico (ML Engine)** |  Completada |
+| **3** | **Módulo de Datos (Persistencia / Supabase)** |  Completada |
+| **4** | **Orquestación & API (FastAPI)** |  En proceso |
+| **5** | **Dashboard Visual (React)** |  Pendiente |
+| **6** | **Integración & Despliegue** |  Pendiente |
 
 ---
 
-## 🏗️ Arquitectura Modular
+##  Arquitectura Modular
 
 El sistema se divide en tres pilares fundamentales para garantizar el desacoplamiento y la escalabilidad del prototipo:
 
@@ -28,7 +28,7 @@ El sistema se divide en tres pilares fundamentales para garantizar el desacoplam
 
 ---
 
-## 📂 Estructura del Repositorio
+##  Estructura del Repositorio
 
 ```text
 MiniMarket24/
@@ -45,7 +45,7 @@ MiniMarket24/
 
 ---
 
-## 🚀 Inicio Rápido
+##  Inicio Rápido
 
 ### Prerrequisitos
 - **Python 3.11+**
@@ -76,7 +76,7 @@ MiniMarket24/
 
 ---
 
-## 👥 Equipo de Desarrollo
+##  Equipo de Desarrollo
 
 - **Elías José Blanco Gil** – T00078817  
 - **Mateo Reyes** – T00077079
