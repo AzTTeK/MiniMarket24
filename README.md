@@ -1,67 +1,90 @@
-## HAY QUE ACTUALIZARLO
+# DEMAND-24 — Sistema Inteligente de Predicción de Demanda
 
-## Arquitectura Modular
+**MiniMarket La 24 S.A.S.**  
+*Solución modular para el manejo de inventarios y predicción de demanda basada en Inteligencia Artificial.*
 
-El sistema está diseñado bajo una arquitectura modular estricta, dividida en tres pilares fundamentales que garantizan el desacoplamiento y la escalabilidad del prototipo:
+---
 
-| Módulo | Responsabilidad | Tecnología |
-|--------|----------------|-----------|
-| **Módulo Analítico** | Corazón del sistema: modelado de IA, entrenamiento y generación de predicciones. | Python + statsmodels + XGBoost |
-| **Lógica de Negocio** | Gestión de datos, motor de alertas, autenticación y reglas de negocio. | FastAPI + Supabase |
-| **Visualización** | Interfaz de usuario dinámica para la toma de decisiones basada en datos. | React.js + Recharts |
+## 📊 Estado del Proyecto
 
-**Base de datos**: [Supabase](https://supabase.com) (PostgreSQL gestionado)  
-**Dataset de entrenamiento**: [Store Sales - Corporación Favorita](https://www.kaggle.com/competitions/store-sales-time-series-forecasting) (Kaggle)
+| Fase | Tarea | Estado |
+| :--- | :--- | :--- |
+| **1** | **Fundación del Proyecto** | ✅ Completada |
+| **2** | **Módulo Analítico (ML Engine)** | ✅ Completada |
+| **3** | **Módulo de Datos (Persistencia / Supabase)** | ✅ Completada |
+| **4** | **Orquestación & API (FastAPI)** | ⏳ En proceso |
+| **5** | **Dashboard Visual (React)** | ⏳ Pendiente |
+| **6** | **Integración & Despliegue** | ⏳ Pendiente |
 
-## Estructura del Proyecto
+---
 
-```
-demand-24/
-├── modulo_analitico/         # Procesamiento de IA y ML 
-├── logica_negocio/           # Backend y API´s
-├── visualizacion/            # Frontend y Dashboard Web
-├── data/                     # Datasets descargados 
-│   └── raw/                  # CSVs originales de Kaggle
-├── notebooks/                # Jupyter notebooks para experimentación
-├── .env.example
-├── .gitignore
+## 🏗️ Arquitectura Modular
+
+El sistema se divide en tres pilares fundamentales para garantizar el desacoplamiento y la escalabilidad del prototipo:
+
+*   **Módulo Analítico (`modulo_analitico/`)**: Corazón del sistema. Modelado de IA con XGBoost, generación de predicciones semanalas e intervalos de confianza.
+*   **Lógica de Negocio (`logica_negocio/`)**: Gestión de datos, repositorio centralizado, motor de alertas y API REST.
+*   **Visualización (`visualizacion/`)**: Interfaz de usuario dinámica para la toma de decisiones basada en datos.
+
+---
+
+## 📂 Estructura del Repositorio
+
+```text
+MiniMarket24/
+├── modulo_analitico/      # ML Engine (Transformers, Aggregators, Models)
+├── logica_negocio/        # Persistencia, Repositorios y Backend
+│   ├── database/          # Modelos SQLAlchemy y Repository Pattern
+│   └── tests/             # Suite de 50+ tests para la capa de datos
+├── Documents/             # Documentación oficial (SRS, Arquitectura, ERD)
+├── data/                  # Almacenamiento local de Datasets (vía .env)
+├── notebooks/             # Análisis exploratorio y prototipado
+├── .env                   # Variables de entorno (No versionado)
 └── README.md
 ```
 
+---
 
-## Inicio Rápido
+## 🚀 Inicio Rápido
 
 ### Prerrequisitos
-- Python 3.11+
-- Node.js 18+
-- Docker & Docker Compose (para despliegue)
+- **Python 3.11+**
+- **Node.js 18+**
+- **Cuenta en Supabase** (PostgreSQL)
 
-### Configuración
+### Instalación
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/AzTTeK/MiniMarket24.git
+    cd MiniMarket24
+    ```
 
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/AzTTeK/MiniMarket24.git
-cd MiniMarket24
+2.  **Configurar entorno virtual:**
+    ```bash
+    python -m venv .venv
+    # Windows:
+    .venv\Scripts\activate
+    ```
 
-# 2. Configurar variables de entorno
-cp .env.example .env
-# Editar .env con tus credenciales de Supabase
+3.  **Instalar dependencias:**
+    ```bash
+    pip install -e .
+    ```
 
-# 3. Crear entorno virtual de Python
-python -m venv venv
-venv\Scripts\activate  # Windows
+4.  **Configurar Datos:**
+    Descarga el dataset de [Kaggle - Store Sales](https://www.kaggle.com/competitions/store-sales-time-series-forecasting) y ubícalo en `data/raw/`.
 
-# 4. Instalar dependencias del backend
-pip install -r backend/requirements.txt
+---
 
-# 5. Colocar dataset de Kaggle en data/raw/
-# Descargar desde: https://www.kaggle.com/competitions/store-sales-time-series-forecasting
-```
+## 👥 Equipo de Desarrollo
 
-## Equipo
+- **Elías José Blanco Gil** – T00078817  
+- **Mateo Reyes** – T00077079
+- **Sebastian Valencia Montesino** – T00078248
+- **Jose Pereira Acuña** – T00079768
+- **Fabián Corpas Castro** – T00064976
 
-- Elías José Blanco Gil – T00078817  
-- Mateo Reyes – T00077079
-- Sebastian Valencia Montesino – T00078248
-- Jose Pereira Acuña – T00079768
-- Fabián Corpas Castro – T00064976
+---
+
+## 📄 Documentación
+Para detalles técnicos sobre requerimientos, modelos de datos y decisiones arquitectónicas, consulta la carpeta [Documents/](file:///Documents/).

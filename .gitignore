@@ -31,11 +31,13 @@ desktop.ini
 
 # ---------- Environment & Secrets ----------
 .env
+/*.md
+!/README.md
 *.pem
 *.key
 
 # ---------- Documentación interna ----------
-Documents/
+# Documents/  <-- Descomentado para que sea visible en GitHub
 ARCHITECTURAL_DECISIONS.md
 FASE3_ROADMAP.md
 NEXT_SESSION_PROMPT.md
