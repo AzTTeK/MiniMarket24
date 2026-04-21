@@ -428,6 +428,118 @@ class DemandPredictor:
         """Verifica si el predictor está listo para usar."""
         return self._is_ready
 
+    def save_predictions_to_db(self, predictions_df: pd.DataFrame, db_session) -> int:
+        """
+        Persiste predicciones en BD usando el Repository Pattern.
+
+        Args:
+            predictions_df: DataFrame con columnas:
+                sku_id, week_start, predicted_demand, confidence_level,
+                lower_bound, upper_bound, mape (todas requeridas).
+            db_session: Sesión SQLAlchemy activa.
+
+        Returns:
+            Número de predicciones guardadas.
+
+        Raises:
+            ValueError: Si las columnas requeridas no existen en el DataFrame.
+            RuntimeError: Si la inserción falla.
+        """
+        # Lazy import para no acoplar módulo analítico a capa de datos
+        from logica_negocio.database.repositories import PredictionRepository
+        from logica_negocio.database.schemas import PredictionCreate
+
+        required_columns = {
+            "sku_id", "week_start", "predicted_demand",
+            "confidence_level", "lower_bound", "upper_bound", "mape",
+        }
+        missing = required_columns - set(predictions_df.columns)
+        if missing:
+            raise ValueError(f"Columnas faltantes en predictions_df: {missing}")
+
+        repo = PredictionRepository(db_session)
+
+        prediction_dtos = []
+        for _, row in predictions_df.iterrows():
+            pred_schema = PredictionCreate(
+                sku_id=int(row["sku_id"]),
+                week_start=row["week_start"],
+                predicted_demand=float(row["predicted_demand"]),
+                confidence_level=float(row["confidence_level"]),
+                lower_bound=float(row["lower_bound"]),
+                upper_bound=float(row["upper_bound"]),
+                mape=float(row["mape"]),
+            )
+            prediction_dtos.append(pred_schema)
+
+        try:
+            results = repo.bulk_create(prediction_dtos)
+            return len(results)
+        except Exception as e:
+            raise RuntimeError(f"Error guardando predicciones: {e}") from e
+
+    def save_training_results_to_db(
+        self,
+        model_version: str,
+        db_session,
+        fold_metrics: Optional[List[Dict]] = None,
+    ) -> None:
+        """
+        Persiste métricas de entrenamiento y versión del modelo en BD.
+
+        Args:
+            model_version: String de versión (e.g. 'v1.0.0').
+            db_session: Sesión SQLAlchemy activa.
+            fold_metrics: Lista de dicts con métricas por fold (opcional).
+
+        Raises:
+            RuntimeError: Si no hay métricas disponibles.
+        """
+        if not self._metrics:
+            raise RuntimeError("No hay métricas. Llamar a train() primero.")
+
+        # Lazy imports
+        from logica_negocio.database.repositories import (
+            EvaluationFoldRepository,
+            ModelVersionRepository,
+        )
+        from logica_negocio.database.schemas import (
+            EvaluationFoldCreate,
+            ModelVersionCreate,
+        )
+
+        # Guardar versión del modelo
+        model_repo = ModelVersionRepository(db_session)
+        model_data = ModelVersionCreate(
+            version=model_version,
+            random_seed=self.config.RANDOM_SEED,
+            n_splits=self.config.N_SPLITS,
+            xgboost_params={
+                "max_depth": self.config.XGBOOST_MAX_DEPTH,
+                "learning_rate": self.config.XGBOOST_LEARNING_RATE,
+                "n_estimators": self.config.XGBOOST_N_ESTIMATORS,
+                "subsample": self.config.XGBOOST_SUBSAMPLE,
+                "colsample_bytree": self.config.XGBOOST_COLSAMPLE_BYTREE,
+            },
+            acceptance_criteria_met=self._metrics.get("acceptance_criteria_met"),
+        )
+        model_repo.create(model_data)
+
+        # Guardar fold metrics si hay
+        if fold_metrics:
+            eval_repo = EvaluationFoldRepository(db_session)
+            eval_dtos = [
+                EvaluationFoldCreate(
+                    fold_number=fm.get("fold_number", idx + 1),
+                    sku_id=fm.get("sku_id"),
+                    mape=fm.get("mape"),
+                    mae=fm.get("mae"),
+                    bias=fm.get("bias"),
+                )
+                for idx, fm in enumerate(fold_metrics)
+            ]
+            eval_repo.bulk_create(eval_dtos)
+
 
 def main():
     """
