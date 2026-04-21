@@ -1,6 +1,5 @@
 # DEMAND-24 — Sistema Inteligente de Predicción de Demanda
 
-**MiniMarket La 24 S.A.S.**  
 *Solución modular para el manejo de inventarios y predicción de demanda basada en Inteligencia Artificial.*
 
 ---
