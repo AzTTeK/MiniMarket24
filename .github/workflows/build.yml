@@ -1,15 +1,13 @@
-name: SonarCloud Analysis
-
+name: Build
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  sonarqube:
+    name: SonarQube Cloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,14 +26,14 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          pytest --cov=logica_negocio --cov=modulo_analitico --cov-report=xml
+          pytest --cov=logica_negocio --cov-report=xml
+          # Solo logica_negocio por ahora si quieres rapidez, o ambos:
+          pytest --cov=modulo_analitico --append --cov-report=xml
         env:
-          # Si los tests necesitan variables de entorno para mockear DB o algo, se añadirían aquí
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
