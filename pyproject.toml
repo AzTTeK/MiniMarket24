@@ -41,8 +41,10 @@ dev = [
     "seaborn>=0.13.0",
 ]
 
-[tool.setuptools]
-packages = ["logica_negocio", "modulo_analitico"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["logica_negocio*", "modulo_analitico*"]
+exclude = ["Documents*", "data*", "notebooks*", "visualizacion*", "PROJECT_STATUS.py"]
 
 [tool.ruff]
 target-version = "py311"
