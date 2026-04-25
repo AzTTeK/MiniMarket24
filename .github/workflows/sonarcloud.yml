@@ -1,0 +1,41 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[dev]
+
+      - name: Run tests and collect coverage
+        run: |
+          pytest --cov=logica_negocio --cov=modulo_analitico --cov-report=xml
+        env:
+          # Si los tests necesitan variables de entorno para mockear DB o algo, se añadirían aquí
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

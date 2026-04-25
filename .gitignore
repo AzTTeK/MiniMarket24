@@ -33,13 +33,15 @@ desktop.ini
 .env
 /*.md
 !/README.md
+!/BITACORA_DESARROLLO_DEMAND24.md
+!/ARCHITECTURAL_DECISIONS.md
 *.pem
 *.key
 
 # ---------- Documentación interna ----------
 # Documents/  <-- Descomentado para que sea visible en GitHub
-ARCHITECTURAL_DECISIONS.md
-PROJECT_STATUS.py
+# ARCHITECTURAL_DECISIONS.md  <-- Permitido
+# PROJECT_STATUS.py
 
 # ---------- Data (datasets too large for Git) ----------
 data/raw/
