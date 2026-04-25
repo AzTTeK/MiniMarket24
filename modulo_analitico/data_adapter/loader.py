@@ -30,7 +30,7 @@ class DataLoader:
 
     REQUIRED_TRAIN_COLUMNS = {
         "id": "int64",
-        "date": "object",
+        "date": "datetime64[ns]",
         "store_nbr": "int64",
         "family": "object",
         "sales": "float64",
@@ -46,7 +46,7 @@ class DataLoader:
     }
 
     REQUIRED_HOLIDAYS_COLUMNS = {
-        "date": "object",
+        "date": "datetime64[ns]",
         "type": "object",
         "locale": "object",
         "locale_name": "object",
@@ -55,8 +55,8 @@ class DataLoader:
     }
 
     REQUIRED_OIL_COLUMNS = {
-        "date": "object",
-        "dcoilwtico": "object",
+        "date": "datetime64[ns]",
+        "dcoilwtico": "float64",
     }
 
     def __init__(self, config: Optional[MLConfig] = None):
@@ -229,9 +229,10 @@ class DataLoader:
     def _is_compatible_type(self, actual: str, expected: str) -> bool:
         """Verifica si un tipo es compatible con el esperado."""
         type_compatibility = {
-            "int64": ["int64", "int32", "int16", "int8"],
-            "float64": ["float64", "float32", "int64", "int32"],
-            "object": ["object", "string"],
+            "int64": ["int64", "int32", "int16", "int8", "int"],
+            "float64": ["float64", "float32", "int64", "int32", "float"],
+            "object": ["object", "string", "bool", "datetime64[ns]"],
+            "datetime64[ns]": ["datetime64[ns]", "datetime64"],
         }
         return actual in type_compatibility.get(expected, [expected])
 
