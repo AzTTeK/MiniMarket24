@@ -26,9 +26,7 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          pytest --cov=logica_negocio --cov-report=xml
-          # Solo logica_negocio por ahora si quieres rapidez, o ambos:
-          pytest --cov=modulo_analitico --append --cov-report=xml
+          pytest
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
