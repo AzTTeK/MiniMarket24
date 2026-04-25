@@ -26,7 +26,7 @@ jobs:
 
       - name: Run tests and collect coverage
         run: |
-          pytest
+          pytest --cov=logica_negocio --cov=modulo_analitico --cov-report=xml:coverage.xml
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
