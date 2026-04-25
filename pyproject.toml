@@ -1,6 +1,11 @@
 [project]
 name = "demand-24"
 version = "0.1.0"
+
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
 description = "Sistema Inteligente de Predicción de Demanda — MiniMarket La 24 S.A.S."
 requires-python = ">=3.11"
 readme = "README.md"
