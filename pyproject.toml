@@ -41,20 +41,10 @@ dev = [
     "seaborn>=0.13.0",
 ]
 
-[tool.setuptools]
-packages = [
-    "logica_negocio",
-    "logica_negocio.database",
-    "logica_negocio.database.models",
-    "logica_negocio.database.repositories",
-    "logica_negocio.database.schemas",
-    "modulo_analitico",
-    "modulo_analitico.config",
-    "modulo_analitico.data_adapter",
-    "modulo_analitico.models",
-    "modulo_analitico.training",
-    "modulo_analitico.wrappers"
-]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["logica_negocio*", "modulo_analitico*"]
+exclude = ["Documents*", "data*", "notebooks*", "visualizacion*", "*.py"]
 
 [tool.ruff]
 target-version = "py311"
