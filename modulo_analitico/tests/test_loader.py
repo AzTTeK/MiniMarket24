@@ -40,7 +40,7 @@ def temp_csv_files(tmp_path):
     oil_path = data_dir / "oil.csv"
     pd.DataFrame({
         "date": ["2023-01-01", "2023-01-02"],
-        "dcoilwtico": [75.0, 76.0]
+        "dcoilwtico": ["75.0", "76.0"] # Debe ser string/object
     }).to_csv(oil_path, index=False)
     
     # holidays_events.csv
@@ -51,7 +51,7 @@ def temp_csv_files(tmp_path):
         "locale": ["National"],
         "locale_name": ["Ecuador"],
         "description": ["New Year"],
-        "transferred": [False]
+        "transferred": ["False"] # Debe ser string/object
     }).to_csv(holidays_path, index=False)
     
     return data_dir
@@ -82,7 +82,7 @@ def test_dataloader_load_methods(temp_csv_files):
     # Con solo 2 días, esto debería devolver False
     is_ok, msg = loader.validate_minimum_weeks_per_sku(df_train, min_weeks=2)
     assert not is_ok
-    assert "no cumplen" in msg
+    assert "menos de 2 semanas" in msg
 
 def test_dataloader_file_not_found(tmp_path):
     """Prueba error cuando no existen archivos."""
