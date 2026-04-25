@@ -329,7 +329,7 @@ class DemandPredictor:
         last_row["is_holiday_week_local"] = 0
 
         last_row["onpromotion"] = last_row.get("onpromotion", 0)
-        last_row["has_promotion"] = 1 if last_row["onpromotion"] > 0 else 0
+        last_row["has_promotion"] = (last_row["onpromotion"] > 0).astype(int)
 
         for col in self._feature_columns:
             if col not in last_row.columns:
