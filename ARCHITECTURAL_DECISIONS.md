@@ -1,11 +1,11 @@
-# 🏛️ DECISIONES ARQUITECTÓNICAS — DEMAND-24
+# DECISIONES ARQUITECTÓNICAS — DEMAND-24
 
 **Última actualización**: 21 de abril de 2026  
 **Validez**: Estas decisiones aplican para todas las fases futuras salvo cambio explícito
 
 ---
 
-## 1️⃣ SEPARACIÓN ESTRICTA DE CAPAS (Regla I)
+## 1. SEPARACIÓN ESTRICTA DE CAPAS (Regla I)
 
 **Decisión**: Las 3 capas NUNCA deben mezclarse.
 
@@ -45,7 +45,7 @@
 
 ---
 
-## 2️⃣ CONFIGURACIÓN 100% DESDE .env (Regla VIII)
+## 2. CONFIGURACIÓN 100% DESDE .env (Regla VIII)
 
 **Decisión**: NUNCA hardcodear valores que cambien entre ambientes.
 
@@ -66,7 +66,7 @@
 
 ---
 
-## 3️⃣ VALIDACIÓN TEMPORAL — TimeSeriesSplit SIEMPRE (Regla VI)
+## 3. VALIDACIÓN TEMPORAL — TimeSeriesSplit SIEMPRE (Regla VI)
 
 **Decisión**: NUNCA usar random shuffle para validación de series de tiempo.
 
@@ -84,8 +84,7 @@
 
 **Flujo INCORRECTO**:
 ```
-❌ train_test_split(data, test_size=0.2, random_state=42)
-❌ Usar datos de mes 12 para entrenar y mes 1 para probar
+Usar datos de mes 12 para entrenar y mes 1 para probar
 ❌ Calcular features con data futura
 ```
 
@@ -93,7 +92,7 @@
 
 ---
 
-## 4️⃣ CRITERIO CA-01 — NUNCA CAMBIAR
+## 4. CRITERIO CA-01 — NUNCA CAMBIAR
 
 **Decisión**: El criterio de aceptación es NEGOCIO, no técnico.
 
@@ -115,7 +114,7 @@ def check_acceptance_criteria(metrics_by_sku: dict) -> bool:
 
 ---
 
-## 5️⃣ MAPE ESPECIAL — Manejo de Ceros
+## 5. MAPE ESPECIAL — Manejo de Ceros
 
 **Decisión**: MAPE = mean(|actual - predicted| / |actual|) * 100, pero con handling especial.
 
@@ -136,7 +135,7 @@ def calculate_mape(actual, predicted):
 
 ---
 
-## 6️⃣ REPRODUCIBILIDAD — Random Seed FIJO
+## 6. REPRODUCIBILIDAD — Random Seed FIJO
 
 **Decisión**: `ML_RANDOM_SEED=42` (fijo, no variable)
 
@@ -153,7 +152,7 @@ xgboost.XGBRegressor(random_state=config.RANDOM_SEED)
 
 ---
 
-## 7️⃣ ARQUITECTURA XGBoost — Wrapper + Model + Trainer
+## 7. ARQUITECTURA XGBoost — Wrapper + Model + Trainer
 
 **Decisión**: 3 capas de abstracción para XGBoost.
 
@@ -182,7 +181,7 @@ Capa 3: ModelTrainer               (with validation split)
 
 ---
 
-## 8️⃣ PERSISTENCIA — ¿Dónde guardar modelos?
+## 8. PERSISTENCIA — ¿Dónde guardar modelos?
 
 **Decisión**: Modelos en disco (joblib), metadata en BD (Supabase).
 
@@ -201,7 +200,7 @@ Metadata (Supabase):
 
 ---
 
-## 9️⃣ PIPELINE ML — NO TOCAR ORDEN
+## 9. PIPELINE ML — NO TOCAR ORDEN
 
 **Decisión**: Pipeline es lineal, no se puede saltar pasos.
 
@@ -225,7 +224,7 @@ CSV → Load → Aggregate → Feature → Split → Train → Validate → Pred
 
 ---
 
-## 🔟 API PÚBLICA DemandPredictor — Contrato
+## 10. API PÚBLICA DemandPredictor — Contrato
 
 **Decisión**: 6 métodos públicos, resto private.
 
@@ -251,7 +250,7 @@ class DemandPredictor:
 
 ---
 
-## 1️⃣1️⃣ EVALUACIÓN — WalkForward vs Train/Test Split
+## 11. EVALUACIÓN — WalkForward vs Train/Test Split
 
 **Decisión**: Usar WalkForwardEvaluator, NO simple train/test split.
 
@@ -275,12 +274,12 @@ Train [1-80], Test [81-100]
 
 ---
 
-## 1️⃣2️⃣ INTEGRACIÓN CON FASE 4 (FastAPI)
+## 12. INTEGRACIÓN CON FASE 4 (FastAPI)
 
 **Decisión**: Backend accede a ML via `DemandPredictor`, NO directo.
 
 ```python
-# ✅ CORRECTO (Fase 4)
+# CORRECTO (Fase 4)
 from modulo_analitico.predictor import DemandPredictor
 
 @app.post("/train")
@@ -292,7 +291,7 @@ def train_endpoint(db_session):
     # Guardar en BD via Repository
     return results
 
-# ❌ INCORRECTO
+# INCORRECTO
 from modulo_analitico.models.xgboost_model import XGBoostDemandModel
 model = XGBoostDemandModel()  # Backend no debe instanciar directo
 ```
@@ -301,7 +300,7 @@ model = XGBoostDemandModel()  # Backend no debe instanciar directo
 
 ---
 
-## 1️⃣3️⃣ ERROR HANDLING — Be Loud, Fail Fast
+## 13. ERROR HANDLING — Be Loud, Fail Fast
 
 **Decisión**: Errores DEBEN loguear + propagarse, no silenciar.
 
@@ -329,7 +328,7 @@ except:
 
 ---
 
-## 1️⃣4️⃣ TESTING — Cobertura de Crítico
+## 14. TESTING — Cobertura de Crítico
 
 **Decisión**: 100% cobertura de critical path (fit, predict, evaluate). Otros pueden ser < 100%.
 
@@ -349,7 +348,7 @@ except:
 
 ---
 
-## 1️⃣5️⃣ LOGGING — DEBUG vs INFO vs ERROR
+## 15. LOGGING — DEBUG vs INFO vs ERROR
 
 **Decisión**: 3 niveles de logging únicamente.
 
@@ -369,7 +368,7 @@ print("Debug info")  # Usar logger.debug()
 
 ---
 
-## 🔄 CAMBIOS FUTUROS ESPERADOS
+## CAMBIOS FUTUROS ESPERADOS
 
 Estas decisiones son ESTABLES. Los cambios esperados cuando evolucionemos:
 
@@ -386,23 +385,23 @@ Pero **NUNCA**:
 
 ---
 
-## ✅ CHECKLIST DE DECISIONES
+## CHECKLIST DE DECISIONES
 
 Al iniciar nuevas sesiones, verificar:
 
-- [ ] ¿Estoy respetando separación de capas?
-- [ ] ¿Todos los valores de config vienen de .env?
-- [ ] ¿Estoy validando con TimeSeriesSplit?
-- [ ] ¿Estoy llamando DemandPredictor, no directo a XGBoost?
-- [ ] ¿Logging está en lugar de print()?
-- [ ] ¿Tests cubren critical path?
-- [ ] ¿Manejo de errores propagando, no silenciando?
+- [ ]
+- [ ]
+- [ ]
+- [ ]
+- [ ]
+- [ ]
+- [ ]
 
-Si la respuesta a TODAS es ✅: Proceed. Si alguna es ❌: Review decisión.
+Si la respuesta a TODAS es Correcto: Proceed. Si alguna es Incorrecto: Review decisión.
 
 ---
 
-## 1️⃣6️⃣ PERSISTENCIA — SQLAlchemy 2.0 & Repository Pattern
+## 16. PERSISTENCIA — SQLAlchemy 2.0 & Repository Pattern
 
 **Decisión**: Usar el patrón Repository para desacoplar modelos ORM de la lógica de negocio.
 
@@ -415,7 +414,7 @@ Si la respuesta a TODAS es ✅: Proceed. Si alguna es ❌: Review decisión.
 
 ---
 
-## 1️⃣7️⃣ SUPABASE COMO FUENTE DE VERDAD (System of Record)
+## 17. SUPABASE COMO FUENTE DE VERDAD (System of Record)
 
 **Decisión**: Supabase es el destino final de todos los datos procesados y predicciones.
 
@@ -426,7 +425,7 @@ Si la respuesta a TODAS es ✅: Proceed. Si alguna es ❌: Review decisión.
 
 ---
 
-## 1️⃣8️⃣ INYECCIÓN DE DEPENDENCIA DE BASE DE DATOS
+## 18. INYECCIÓN DE DEPENDENCIA DE BASE DE DATOS
 
 **Decisión**: La sesión de base de datos se inyecta desde la capa superior (Backend) a los repositorios o al predictor.
 

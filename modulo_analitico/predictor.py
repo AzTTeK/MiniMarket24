@@ -88,7 +88,7 @@ class DemandPredictor:
             FileNotFoundError: Si los CSVs no existen
             ValueError: Si los datos son inválidos
         """
-        print("📥 Cargando datos...")
+        print("Cargando datos...")
 
         train_df, stores_df, holidays_df, oil_df = self._data_loader.load_all_data()
 
@@ -99,9 +99,9 @@ class DemandPredictor:
 
         valid, mensaje = self._data_loader.validate_minimum_weeks_per_sku(train_df)
         if not valid:
-            print(f"⚠️  Advertencia: {mensaje}")
+            print(f"ADVERTENCIA: {mensaje}")
 
-        print(f"✅ Datos cargados: {len(train_df):,} filas diarias")
+        print(f"Datos cargados: {len(train_df):,} filas diarias")
         return self
 
     def prepare_data(
@@ -117,7 +117,7 @@ class DemandPredictor:
         Returns:
             self para method chaining
         """
-        print("🔧 Preparando datos...")
+        print("Preparando datos...")
 
         pilot_families = pilot_families or self.config.PILOT_FAMILIES
 
@@ -141,7 +141,7 @@ class DemandPredictor:
         self._weekly_df = weekly_df
         self._features_df = features_df
 
-        print(f"✅ Datos preparados: {len(features_df):,} filas semanales")
+        print(f"Datos preparados: {len(features_df):,} filas semanales")
         print(f"   Features: {len(self._feature_columns)} columnas")
         print(f"   Familias piloto: {len(pilot_families)}")
 
@@ -168,7 +168,7 @@ class DemandPredictor:
         if self._features_df is None:
             raise RuntimeError("Datos no preparados. Llamar a load_data() y prepare_data() primero.")
 
-        print("🚀 Entrenando modelo...")
+        print("Entrenando modelo...")
 
         if use_cross_validation:
             self._model, metrics, fold_metrics = self._trainer.train_with_cross_validation(
@@ -177,7 +177,7 @@ class DemandPredictor:
                 "sales",
                 n_splits=self.config.N_SPLITS,
             )
-            print(f"✅ CV completado: {len(fold_metrics)} folds")
+            print(f"CV completado: {len(fold_metrics)} folds")
             print(f"   MAPE promedio: {metrics['mape_mean']:.2f}% ± {metrics['mape_std']:.2f}%")
         else:
             self._model, metrics, _ = self._trainer.train(
@@ -186,14 +186,14 @@ class DemandPredictor:
                 "sales",
                 test_size=0.2,
             )
-            print(f"✅ Train/Test completado")
+            print(f"Train/Test completado")
             print(f"   MAPE: {metrics['mape']:.2f}%")
 
         self._metrics = metrics
 
         if save_model:
             self.save_model()
-            print(f"💾 Modelo guardado en: {self.model_path}")
+            print(f"Modelo guardado en: {self.model_path}")
 
         self._is_ready = True
 
@@ -225,7 +225,7 @@ class DemandPredictor:
         if not self._is_ready or self._model is None:
             raise RuntimeError("Modelo no entrenado. Llamar a train() primero.")
 
-        print(f"🔮 Generando predicciones para {weeks_ahead} semanas...")
+        print(f"Generando predicciones para {weeks_ahead} semanas...")
 
         last_week = self._features_df["week_start"].max()
         last_week = pd.to_datetime(last_week)
@@ -287,7 +287,7 @@ class DemandPredictor:
                 axis=1,
             )
 
-        print(f"✅ Predicciones generadas: {len(predictions_df)} filas")
+        print(f"Predicciones generadas: {len(predictions_df)} filas")
 
         return predictions_df
 
@@ -352,7 +352,7 @@ class DemandPredictor:
         if self._features_df is None:
             raise RuntimeError("Datos no preparados. Llamar a prepare_data() primero.")
 
-        print("📊 Evaluando modelo con walk-forward validation...")
+        print("Evaluando modelo con walk-forward validation...")
 
         report = self._evaluator.generate_evaluation_report(
             self._features_df,
@@ -399,7 +399,7 @@ class DemandPredictor:
         self._metrics = self._model.get_metrics()
         self._is_ready = True
 
-        print(f"✅ Modelo cargado desde: {path}")
+        print(f"Modelo cargado desde: {path}")
         return self
 
     def get_feature_importance(self) -> Optional[pd.DataFrame]:
@@ -581,16 +581,16 @@ def main():
         print("=" * 60)
         print(predictions.head(10).to_string())
 
-        print("\n✅ Pipeline completado exitosamente!")
+        print("\nPipeline completado exitosamente!")
 
     except FileNotFoundError as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\nERROR: {e}")
         print("\nAsegúrate de descargar los datasets desde:")
         print("https://www.kaggle.com/competitions/store-sales-time-series-forecasting")
         print("Y colocarlos en: data/raw/")
 
     except Exception as e:
-        print(f"\n❌ Error inesperado: {e}")
+        print(f"\nERROR inesperado: {e}")
         raise
 
 

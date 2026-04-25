@@ -198,7 +198,7 @@ class ModelTrainer:
             family_df = df[df["family"] == family].copy()
 
             if len(family_df) < 50:
-                print(f"⚠️  Familia {family}: solo {len(family_df)} filas, se salta.")
+                print(f"WARNING: Familia {family}: solo {len(family_df)} filas, se salta.")
                 continue
 
             try:
@@ -209,9 +209,9 @@ class ModelTrainer:
                     test_size=0.2,
                 )
                 results[family] = (model, metrics)
-                print(f"✅ Familia {family}: MAPE={metrics['mape']:.2f}%")
+                print(f"SUCCESS: Familia {family}: MAPE={metrics['mape']:.2f}%")
             except Exception as e:
-                print(f"❌ Familia {family}: Error - {str(e)}")
+                print(f"ERROR: Familia {family}: Error - {str(e)}")
 
         return results
 
