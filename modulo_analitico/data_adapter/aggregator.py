@@ -21,7 +21,7 @@ class DataAggregator:
     
     Responsabilidades:
     - Transformar daily → weekly (suma ventas, promedio promociones)
-    - Alinear a lunes como inicio de semana (W-MON)
+    - Alinear a lunes como inicio de semana (W-SUN)
     - Manejar semanas parciales correctamente
     """
 
@@ -52,7 +52,7 @@ class DataAggregator:
         """
         df_copy = df.copy()
 
-        df_copy["week_start"] = df_copy["date"].dt.to_period("W-MON").dt.start_time
+        df_copy["week_start"] = df_copy["date"].dt.to_period("W-SUN").dt.start_time
 
         group_cols = ["store_nbr", "week_start"]
         if group_by_family:
@@ -87,7 +87,7 @@ class DataAggregator:
         """
         df_copy = df.copy()
 
-        df_copy["week_start"] = df_copy["date"].dt.to_period("W-MON").dt.start_time
+        df_copy["week_start"] = df_copy["date"].dt.to_period("W-SUN").dt.start_time
 
         group_cols = ["store_nbr", "week_start"]
         if group_by_family:
@@ -123,7 +123,7 @@ class DataAggregator:
             Tuple con (primera_fecha_lunes, ultima_fecha_lunes)
         """
         df_copy = df.copy()
-        df_copy["week_start"] = df_copy["date"].dt.to_period("W-MON").dt.start_time
+        df_copy["week_start"] = df_copy["date"].dt.to_period("W-SUN").dt.start_time
 
         first_week = df_copy["week_start"].min()
         last_week = df_copy["week_start"].max()

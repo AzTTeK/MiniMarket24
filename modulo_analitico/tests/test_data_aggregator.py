@@ -44,11 +44,11 @@ def test_aggregator_weekly_stats():
     })
     
     stats = aggregator.calculate_weekly_stats(df_daily)
-    # Buscamos la semana que tenga los 7 días para validar el promedio
+    # Buscamos la semana que tenga los 7 días para validar el promedio y promociones
     full_week_stats = stats[stats["n_days"] == 7]
     if not full_week_stats.empty:
         assert full_week_stats["sales_mean"].iloc[0] == pytest.approx(14.28, 0.01)
-    assert stats["onpromotion_days"].iloc[0] == 3
+        assert full_week_stats["onpromotion_days"].iloc[0] == 3
 
 def test_aggregator_fill_missing_weeks():
     """Prueba el relleno de semanas faltantes."""
