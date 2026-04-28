@@ -31,9 +31,11 @@ desktop.ini
 
 # ---------- Environment & Secrets ----------
 .env
-*.md
 *.pem
 *.key
+
+# ---------- Documentation (root level) ----------
+*.md
 
 # ---------- Documentación interna ----------
 # Documents/  <-- Descomentado para que sea visible en GitHub
@@ -69,6 +71,8 @@ frontend/build/
 .coverage
 htmlcov/
 .pytest_cache/
+coverage.xml
+sonar-project.properties
 
 # ---------- Gemini Agent ----------
 .agents/
