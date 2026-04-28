@@ -31,10 +31,7 @@ desktop.ini
 
 # ---------- Environment & Secrets ----------
 .env
-/*.md
-!/README.md
-!/BITACORA_DESARROLLO_DEMAND24.md
-!/ARCHITECTURAL_DECISIONS.md
+*.md
 *.pem
 *.key
 
