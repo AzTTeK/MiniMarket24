@@ -93,10 +93,10 @@ class Settings:
 
     # --- Configuración del Piloto ---
     PILOT_SKU_IDS: list[str] = field(
-        default_factory=lambda: _get_env_list("PILOT_SKU_IDS", "101,102,103,104,105")
+        default_factory=lambda: _get_env_list("PILOT_SKU_IDS", "")
     )
     MIN_WEEKS_HISTORY: int = field(
-        default_factory=lambda: _get_env_int("MIN_WEEKS_HISTORY", 12)
+        default_factory=lambda: _get_env_int("MIN_WEEKS_HISTORY", 4)
     )
     MAPE_LOW_CONFIDENCE_THRESHOLD: float = field(
         default_factory=lambda: _get_env_float("MAPE_LOW_CONFIDENCE_THRESHOLD", 25.0)

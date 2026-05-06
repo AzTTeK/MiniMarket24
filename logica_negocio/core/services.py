@@ -121,7 +121,10 @@ class DemandService:
             training_results = predictor.train()
 
             logger.info("Etapa 4/4: Persistiendo resultados en BD...")
-            predictor.save_training_results_to_db(self._db)
+            predictor.save_training_results_to_db(
+                model_version="v1.0-demo",
+                db_session=self._db
+            )
 
         except FileNotFoundError as err:
             logger.error("Dataset no encontrado: %s", err)

@@ -198,7 +198,7 @@ class FeatureBuilder:
         oil_weekly = oil_copy.groupby("week_start").agg(
             oil_price=("dcoilwtico", "mean"),
         ).reset_index()
-        oil_weekly["oil_price"] = oil_weekly["oil_price"].fillna(method="ffill")
+        oil_weekly["oil_price"] = oil_weekly["oil_price"].ffill()
         oil_weekly["oil_price"] = oil_weekly["oil_price"].fillna(oil_weekly["oil_price"].median())
 
         oil_weekly["oil_price_lag_1"] = oil_weekly["oil_price"].shift(1)
@@ -228,7 +228,7 @@ class FeatureBuilder:
         - sales_lag_1, sales_lag_2, sales_lag_4, sales_lag_8, sales_lag_52
         """
         if lag_weeks is None:
-            lag_weeks = [1, 2, 4, 8, 52]
+            lag_weeks = [1, 2, 3, 4]
 
         result = df.copy()
         result = result.sort_values(["store_nbr", "family", "week_start"])

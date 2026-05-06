@@ -228,11 +228,13 @@ class DataLoader:
 
     def _is_compatible_type(self, actual: str, expected: str) -> bool:
         """Verifica si un tipo es compatible con el esperado."""
+        if expected.startswith("datetime64"):
+            return actual.startswith("datetime64")
+            
         type_compatibility = {
             "int64": ["int64", "int32", "int16", "int8", "int"],
             "float64": ["float64", "float32", "int64", "int32", "float"],
-            "object": ["object", "string", "bool", "datetime64[ns]"],
-            "datetime64[ns]": ["datetime64[ns]", "datetime64"],
+            "object": ["object", "string", "str", "bool", "datetime64[ns]", "datetime64[us]"],
         }
         return actual in type_compatibility.get(expected, [expected])
 

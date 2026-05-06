@@ -75,6 +75,7 @@ class DemandPredictor:
         self._feature_columns: List[str] = []
 
         self._metrics: Dict[str, float] = {}
+        self._fold_metrics: List[Dict] = []
         self._is_ready = False
 
     def load_data(self) -> "DemandPredictor":
@@ -119,31 +120,33 @@ class DemandPredictor:
         """
         print("Preparando datos...")
 
-        pilot_families = pilot_families or self.config.PILOT_FAMILIES
-
         train_df = self._train_df.copy()
-        train_df = train_df[train_df["family"].isin(pilot_families)]
+
+        if pilot_families:
+            train_df = train_df[train_df["family"].isin(pilot_families)]
+        else:
+            print("Entrenando con todas las familias encontradas en el dataset.")
 
         weekly_df = self._aggregator.aggregate_daily_to_weekly(
             train_df,
             group_by_family=True,
         )
 
-        features_df = self._feature_builder.build_all_features(
+        self._features_df = self._feature_builder.build_all_features(
             weekly_df,
             self._stores_df,
             self._holidays_df,
             self._oil_df,
         )
 
-        self._feature_columns = self._feature_builder.get_feature_columns(features_df)
+        self._feature_columns = self._feature_builder.get_feature_columns(self._features_df)
 
         self._weekly_df = weekly_df
-        self._features_df = features_df
-
-        print(f"Datos preparados: {len(features_df):,} filas semanales")
+        
+        print(f"Datos preparados: {len(self._features_df):,} filas semanales")
         print(f"   Features: {len(self._feature_columns)} columnas")
-        print(f"   Familias piloto: {len(pilot_families)}")
+        n_fam = len(pilot_families) if pilot_families else len(weekly_df["family"].unique())
+        print(f"   Familias procesadas: {n_fam}")
 
         return self
 
@@ -177,6 +180,7 @@ class DemandPredictor:
                 "sales",
                 n_splits=self.config.N_SPLITS,
             )
+            self._fold_metrics = fold_metrics
             print(f"CV completado: {len(fold_metrics)} folds")
             print(f"   MAPE promedio: {metrics['mape_mean']:.2f}% ± {metrics['mape_std']:.2f}%")
         else:
@@ -482,7 +486,6 @@ class DemandPredictor:
         self,
         model_version: str,
         db_session,
-        fold_metrics: Optional[List[Dict]] = None,
     ) -> None:
         """
         Persiste métricas de entrenamiento y versión del modelo en BD.
@@ -490,13 +493,12 @@ class DemandPredictor:
         Args:
             model_version: String de versión (e.g. 'v1.0.0').
             db_session: Sesión SQLAlchemy activa.
-            fold_metrics: Lista de dicts con métricas por fold (opcional).
-
-        Raises:
-            RuntimeError: Si no hay métricas disponibles.
         """
         if not self._metrics:
             raise RuntimeError("No hay métricas. Llamar a train() primero.")
+
+        # Guardar fold metrics si hay
+        fold_metrics = self._fold_metrics
 
         # Lazy imports
         from logica_negocio.database.repositories import (
@@ -530,8 +532,8 @@ class DemandPredictor:
             eval_repo = EvaluationFoldRepository(db_session)
             eval_dtos = [
                 EvaluationFoldCreate(
-                    fold_number=fm.get("fold_number", idx + 1),
-                    sku_id=fm.get("sku_id"),
+                    fold_number=fm.get("fold", idx + 1),
+                    sku_id=None,  # Entrenamiento global
                     mape=fm.get("mape"),
                     mae=fm.get("mae"),
                     bias=fm.get("bias"),

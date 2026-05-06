@@ -1,5 +1,5 @@
 # ===========================
-# DEMAND-24 .gitignore
+# DEMAND-24 .gitignore (Optimizado para Transición)
 # ===========================
 
 # ---------- Python ----------
@@ -30,25 +30,20 @@ Thumbs.db
 desktop.ini
 
 # ---------- Environment & Secrets ----------
-.env
+# .env  <-- PERMITIDO para la transición
+! .env
 *.pem
 *.key
 
-# ---------- Documentation (root level) ----------
-*.md
+# ---------- Documentation ----------
+# *.md  <-- PERMITIDO para la transición
+! *.md
 
-# ---------- Documentación interna ----------
-# Documents/  <-- Descomentado para que sea visible en GitHub
-# ARCHITECTURAL_DECISIONS.md  <-- Permitido
-# PROJECT_STATUS.py
-
-# ---------- Data (datasets too large for Git) ----------
+# ---------- Data (Ignorados por peso) ----------
 data/raw/
 data/processed/
 *.csv
-!backend/ml_engine/config/*.csv
-
-# ---------- ML Artifacts ----------
+*.db
 mlflow-data/
 mlruns/
 *.pkl
@@ -61,18 +56,8 @@ frontend/dist/
 frontend/build/
 .next/
 
-# ---------- Docker ----------
+# ---------- Docker & Logs ----------
 *.log
-
-# ---------- Jupyter ----------
-.ipynb_checkpoints/
-
-# ---------- Test / Coverage ----------
-.coverage
-htmlcov/
-.pytest_cache/
-coverage.xml
-sonar-project.properties
 
 # ---------- Gemini Agent ----------
 .agents/
