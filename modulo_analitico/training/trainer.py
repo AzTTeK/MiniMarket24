@@ -150,7 +150,7 @@ class ModelTrainer:
             y_pred = model_fold.predict(test_fold)
 
             metrics = calculate_metrics(y_test, y_pred)
-            metrics["fold"] = fold_idx
+            metrics["fold"] = fold_idx + 1
             metrics["n_train"] = len(train_fold)
             metrics["n_test"] = len(test_fold)
 

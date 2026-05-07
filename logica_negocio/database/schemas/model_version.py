@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 class ModelVersionCreate(BaseModel):
     """Schema para registrar una nueva versión de modelo."""
 
-    version: str = Field(..., max_length=20, description="Versión semántica (e.g. 'v1.0.0')")
+    version: str = Field(..., max_length=50, description="Versión semántica (e.g. 'v1.0.0')")
     training_date: Optional[datetime] = Field(None, description="Fecha de entrenamiento")
     random_seed: Optional[int] = Field(None, description="Semilla de reproducibilidad")
     n_splits: Optional[int] = Field(None, ge=1, description="Número de folds CV")

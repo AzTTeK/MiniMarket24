@@ -42,7 +42,7 @@ class ModelVersion(Base):
     __tablename__ = "model_version"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    version = Column(String(20), unique=True, nullable=False, index=True)
+    version = Column(String(50), unique=True, nullable=False, index=True)
     training_date = Column(DateTime(timezone=True), default=_utcnow)
     random_seed = Column(Integer, nullable=True)
     n_splits = Column(Integer, nullable=True)

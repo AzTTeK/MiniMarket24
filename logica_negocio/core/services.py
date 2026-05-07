@@ -120,9 +120,12 @@ class DemandService:
             logger.info("Etapa 3/4: Entrenando modelo...")
             training_results = predictor.train()
 
-            logger.info("Etapa 4/4: Persistiendo resultados en BD...")
+            from datetime import datetime
+            version_name = f"v1.0-demo-{datetime.now().strftime('%Y%m%d-%H%M')}"
+            
+            logger.info("Etapa 4/4: Persistiendo resultados en BD (%s)...", version_name)
             predictor.save_training_results_to_db(
-                model_version="v1.0-demo",
+                model_version=version_name,
                 db_session=self._db
             )
 

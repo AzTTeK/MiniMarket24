@@ -24,54 +24,6 @@ const KPICard = ({ title, value, unit, trend, trendValue, color }) => {
         </div>
       )}
 
-      <style jsx>{`
-        .kpi-card {
-          flex: 1;
-          min-width: 200px;
-        }
-
-        .kpi-title {
-          font-size: 0.8rem;
-          color: var(--text-muted);
-          font-weight: 500;
-          margin-bottom: 0.5rem;
-        }
-
-        .kpi-value-container {
-          display: flex;
-          align-items: baseline;
-          gap: 0.25rem;
-          margin-bottom: 0.75rem;
-        }
-
-        .kpi-value {
-          font-size: 2rem;
-          font-weight: 700;
-          color: var(--text-main);
-        }
-
-        .kpi-unit {
-          font-size: 0.875rem;
-          color: var(--text-muted);
-          font-weight: 500;
-        }
-
-        .kpi-trend {
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-          font-size: 0.75rem;
-          font-weight: 600;
-        }
-
-        .kpi-trend.positive {
-          color: var(--success);
-        }
-
-        .kpi-trend.negative {
-          color: var(--danger);
-        }
-      `}</style>
     </motion.div>
   );
 };

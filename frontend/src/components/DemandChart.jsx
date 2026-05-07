@@ -23,7 +23,13 @@ const DemandChart = ({ data, skuName }) => {
           {payload.map((entry, index) => (
             <div key={index} className="tooltip-item" style={{ color: entry.color }}>
               <span className="dot" style={{ backgroundColor: entry.color }}></span>
-              <span>{entry.name}: {entry.value.toFixed(1)} uds</span>
+              <span>
+                {entry.name}: {
+                  Array.isArray(entry.value) 
+                    ? `${entry.value[0].toFixed(1)} - ${entry.value[1].toFixed(1)}`
+                    : (typeof entry.value === 'number' ? entry.value.toFixed(1) : '0.0')
+                } uds
+              </span>
             </div>
           ))}
         </div>
@@ -31,6 +37,14 @@ const DemandChart = ({ data, skuName }) => {
     }
     return null;
   };
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="card chart-card flex-center" style={{ height: '300px' }}>
+        <p className="text-muted">No hay datos suficientes para generar la gráfica.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="card chart-card">
@@ -104,61 +118,6 @@ const DemandChart = ({ data, skuName }) => {
         </ResponsiveContainer>
       </div>
 
-      <style jsx>{`
-        .chart-card {
-          margin-top: var(--space-lg);
-        }
-
-        .chart-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--space-xl);
-        }
-
-        .chart-sku-selector {
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-
-        .sku-selected {
-          color: var(--primary-600);
-          font-weight: 700;
-        }
-
-        .chart-container {
-          width: 100%;
-        }
-
-        .custom-tooltip {
-          padding: 0.75rem !important;
-          border: 1px solid var(--border);
-        }
-
-        .tooltip-label {
-          font-weight: 700;
-          margin-bottom: 0.5rem;
-          font-size: 0.75rem;
-          color: var(--text-muted);
-        }
-
-        .tooltip-item {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.875rem;
-          font-weight: 600;
-          margin-top: 0.25rem;
-        }
-
-        .dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-        }
-      `}</style>
     </div>
   );
 };

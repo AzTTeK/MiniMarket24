@@ -58,9 +58,9 @@ function App() {
   const handleTrain = async () => {
     try {
       setTraining(true);
-      await apiService.triggerTraining();
-      alert('¡IA Sincronizada con Éxito!');
-      await fetchData();
+      const res = await apiService.triggerTraining();
+      alert(res.data?.message || 'Sincronización iniciada en segundo plano.');
+      // No recargamos inmediatamente porque el proceso sigue corriendo
     } catch (error) {
       alert('Error en sincronización: ' + (error.response?.data?.detail || 'El backend no responde.'));
     } finally {
@@ -69,7 +69,8 @@ function App() {
   };
 
   const exportAlerts = () => {
-    const text = alerts.map(a => `[${a.alert_type.toUpperCase()}] ${a.message}`).join('\n');
+    if (!alerts || alerts.length === 0) return alert("No hay alertas para exportar");
+    const text = alerts.map(a => `[${(a.alert_type || 'INFO').toUpperCase()}] ${a.message || ''}`).join('\n');
     const blob = new Blob([`DEMAND-24 REPORT\n${new Date().toLocaleString()}\n\n${text}`], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

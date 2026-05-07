@@ -19,6 +19,8 @@ const PredictionTable = ({ predictions }) => {
     }
   };
 
+  if (!predictions) return null;
+
   return (
     <div className="card table-card">
       <div className="table-header">
@@ -60,73 +62,6 @@ const PredictionTable = ({ predictions }) => {
           </tbody>
         </table>
       </div>
-
-      <style jsx>{`
-        .table-card {
-          margin-top: var(--space-lg);
-          padding: 0;
-          overflow: hidden;
-        }
-
-        .table-header {
-          padding: var(--space-lg);
-          border-bottom: 1px solid var(--border);
-        }
-
-        .table-responsive {
-          overflow-x: auto;
-        }
-
-        .data-table {
-          width: 100%;
-          border-collapse: collapse;
-          text-align: left;
-        }
-
-        .data-table th {
-          background: #f8fafc;
-          padding: 1rem 1.5rem;
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: var(--text-muted);
-          text-transform: uppercase;
-          letter-spacing: 0.025em;
-        }
-
-        .data-table td {
-          padding: 1rem 1.5rem;
-          font-size: 0.875rem;
-          border-bottom: 1px solid var(--border);
-        }
-
-        .data-table tr:last-child td {
-          border-bottom: none;
-        }
-
-        .product-name {
-          font-weight: 600;
-          color: var(--text-main);
-        }
-
-        .confidence-cell {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-weight: 500;
-        }
-
-        .conf-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-        }
-
-        .empty-table {
-          text-align: center;
-          padding: 3rem !important;
-          color: var(--text-muted);
-        }
-      `}</style>
     </div>
   );
 };
