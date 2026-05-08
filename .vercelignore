@@ -1,0 +1,15 @@
+# Excluir carpetas pesadas para Vercel
+node_modules
+frontend/node_modules
+.venv
+venv
+data/
+*.db
+.git
+.github
+*.pdf
+Documents/
+notebooks/
+.ipynb_checkpoints
+build/
+dist/

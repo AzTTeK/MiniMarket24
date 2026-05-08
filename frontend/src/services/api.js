@@ -1,17 +1,11 @@
 /**
  * DEMAND-24 — API Service Layer
- *
- * Cliente HTTP centralizado para comunicacion con el backend FastAPI.
- * Todos los endpoints se consumen a traves de este modulo.
- *
- * Cumple con:
- * - Regla I: Frontend es "tonto" — solo consume datos via REST
- * - Regla II: Wrapper sobre Axios para agnosticismo de dependencia
  */
 
 import axios from 'axios';
+import { supabase } from './supabaseClient';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -21,12 +15,45 @@ const apiClient = axios.create({
   },
 });
 
+// Interceptor para inyectar el token de Supabase en cada peticion
+apiClient.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  return config;
+});
+
+// ── Auth ─────────────────────────────────────────────────────
+
+export const login = async (email, password) => {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data;
+};
+
+export const register = async (email, password, fullName) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } }
+  });
+  if (error) throw error;
+  return data;
+};
+
+export const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+};
+
+export const getCurrentUser = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+};
+
 // ── Dashboard ────────────────────────────────────────────────
 
-/**
- * Obtiene el resumen completo del dashboard.
- * Incluye KPIs, lista de productos y datos de graficos.
- */
 export const getDashboardSummary = async () => {
   const response = await apiClient.get('/dashboard/summary');
   return response.data;
@@ -40,11 +67,6 @@ export const getSkus = async () => {
 };
 
 // ── Predictions ──────────────────────────────────────────────
-
-export const getPredictions = async () => {
-  const response = await apiClient.get('/predictions');
-  return response.data;
-};
 
 export const getPredictionsBySku = async (skuId) => {
   const response = await apiClient.get(`/predictions/${skuId}`);
@@ -65,20 +87,8 @@ export const getAlerts = async () => {
   return response.data;
 };
 
-export const getAllAlerts = async () => {
-  const response = await apiClient.get('/alerts/all');
-  return response.data;
-};
-
 export const acknowledgeAlert = async (alertId) => {
   const response = await apiClient.patch(`/alerts/${alertId}/acknowledge`);
-  return response.data;
-};
-
-// ── Health ───────────────────────────────────────────────────
-
-export const getHealth = async () => {
-  const response = await apiClient.get('/health');
   return response.data;
 };
 

@@ -61,3 +61,4 @@ frontend/build/
 
 # ---------- Gemini Agent ----------
 .agents/
+.vercel

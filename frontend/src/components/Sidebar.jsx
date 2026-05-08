@@ -6,7 +6,7 @@ import {
   TrendingUp,
   Bell,
   LogOut,
-  Settings
+  User
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, onTabChange }) => {
@@ -16,7 +16,7 @@ const Sidebar = ({ activeTab, onTabChange }) => {
     { id: 'inventory', label: 'Inventario', icon: Package, category: 'PRINCIPAL' },
     { id: 'trends', label: 'Tendencias', icon: TrendingUp, category: 'REPORTES' },
     { id: 'alerts', label: 'Alertas', icon: Bell, category: 'REPORTES' },
-    { id: 'settings', label: 'Configuración', icon: Settings, category: 'SISTEMA' },
+    { id: 'profile', label: 'Perfil', icon: User, category: 'SISTEMA' },
   ];
 
   return (
