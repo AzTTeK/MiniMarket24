@@ -2,10 +2,6 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    },
-    {
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
@@ -13,16 +9,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "api/index.py"
-    },
-    {
       "source": "/(.*)",
       "destination": "frontend/$1"
     }
-  ],
-  "env": {
-    "APP_ENV": "production",
-    "APP_DEBUG": "false"
-  }
+  ]
 }
