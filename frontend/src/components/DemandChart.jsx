@@ -11,7 +11,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-const DemandChart = ({ data, skuName }) => {
+const DemandChart = ({ data, skuName, productSelector }) => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -46,8 +46,13 @@ const DemandChart = ({ data, skuName }) => {
     <div className="card chart-card">
       <div className="chart-header">
         <h3>Demanda — Histórica vs Proyectada</h3>
-        <div className="chart-sku-selector">
-          SKU: <span className="sku-selected">{skuName || 'Todos'}</span>
+        <div className="chart-header-controls">
+          {productSelector && productSelector}
+          {!productSelector && (
+            <div className="chart-sku-selector">
+              SKU: <span className="sku-selected">{skuName || 'Todos'}</span>
+            </div>
+          )}
         </div>
       </div>
 

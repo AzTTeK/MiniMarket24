@@ -37,10 +37,10 @@ API_PREFIX = "/api/v1"
 @asynccontextmanager
 async def lifespan(application: FastAPI):
     """Lifespan handler para inicio y cierre de la aplicación."""
-    logger.info("🚀 DEMAND-24 API iniciando — Fase 4")
+    logger.info("DEMAND-24 API iniciando -- Fase 4")
     logger.info("Documentación disponible en: http://localhost:8000/docs")
     yield
-    logger.info("🛑 DEMAND-24 API cerrando")
+    logger.info("DEMAND-24 API cerrando")
 
 
 app = FastAPI(
@@ -62,7 +62,7 @@ app = FastAPI(
 # Permite peticiones desde el frontend React (Fase 5)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # En producción, restringir al dominio del frontend
+    allow_origins=["*"],  # En produccion, restringir al dominio del frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

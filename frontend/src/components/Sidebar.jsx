@@ -16,6 +16,7 @@ const Sidebar = ({ activeTab, onTabChange }) => {
     { id: 'inventory', label: 'Inventario', icon: Package, category: 'PRINCIPAL' },
     { id: 'trends', label: 'Tendencias', icon: TrendingUp, category: 'REPORTES' },
     { id: 'alerts', label: 'Alertas', icon: Bell, category: 'REPORTES' },
+    { id: 'settings', label: 'Configuración', icon: Settings, category: 'SISTEMA' },
   ];
 
   return (
@@ -26,7 +27,7 @@ const Sidebar = ({ activeTab, onTabChange }) => {
       </div>
 
       <nav className="sidebar-nav">
-        {['PRINCIPAL', 'REPORTES'].map(category => (
+        {['PRINCIPAL', 'REPORTES', 'SISTEMA'].map(category => (
           <div key={category} className="nav-group">
             <span className="nav-category">{category}</span>
             {navItems.filter(item => item.category === category).map(item => (
