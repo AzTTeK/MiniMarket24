@@ -14,8 +14,9 @@ from pydantic import BaseModel, Field
 class SkuCreate(BaseModel):
     """Schema para crear un nuevo SKU."""
 
-    sku_code: str = Field(..., max_length=20, description="Código único del SKU")
-    description: Optional[str] = Field(None, description="Descripción del producto")
+    sku_code: str = Field(..., max_length=50, description="Codigo unico del SKU")
+    description: Optional[str] = Field(None, description="Descripcion del producto")
+    current_stock: Optional[int] = Field(0, ge=0, description="Stock actual en unidades")
 
 
 class SkuRead(BaseModel):
@@ -24,6 +25,7 @@ class SkuRead(BaseModel):
     id: int
     sku_code: str
     description: Optional[str] = None
+    current_stock: Optional[int] = 0
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -33,5 +35,6 @@ class SkuRead(BaseModel):
 class SkuUpdate(BaseModel):
     """Schema para actualizar un SKU (campos opcionales)."""
 
-    sku_code: Optional[str] = Field(None, max_length=20)
+    sku_code: Optional[str] = Field(None, max_length=50)
     description: Optional[str] = None
+    current_stock: Optional[int] = Field(None, ge=0)

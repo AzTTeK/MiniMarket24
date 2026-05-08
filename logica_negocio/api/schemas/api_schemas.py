@@ -76,3 +76,43 @@ class MessageResponse(BaseModel):
 
     status: str
     message: str
+
+
+# ── Dashboard ───────────────────────────────────────────────────
+
+class ProductSummary(BaseModel):
+    """Resumen de un producto para el dashboard."""
+
+    sku_id: int = Field(..., description="ID del SKU")
+    code: str = Field(..., description="Codigo del SKU (familia)")
+    product: str = Field(..., description="Nombre legible del producto")
+    stock: int = Field(..., description="Stock actual en unidades")
+    demand: int = Field(..., description="Demanda estimada semanal")
+    status: str = Field(..., description="Estado: Normal, Quiebre, Revisar")
+    confidence: str = Field(..., description="Nivel de confianza: Alta, Media, Baja")
+
+
+class ChartPoint(BaseModel):
+    """Punto de datos para el grafico de demanda."""
+
+    name: str = Field(..., description="Etiqueta de la semana (S-7, S0, S+1...)")
+    actual: Optional[float] = Field(None, description="Ventas reales")
+    projected: Optional[float] = Field(None, description="Proyeccion del modelo")
+    range: Optional[List[float]] = Field(None, description="Intervalo de confianza [lower, upper]")
+
+
+class KPISummary(BaseModel):
+    """KPIs principales del dashboard."""
+
+    total_skus: int
+    model_accuracy: float
+    breakdowns: int
+    under_review: int
+
+
+class DashboardSummary(BaseModel):
+    """Respuesta completa del endpoint de dashboard."""
+
+    kpis: KPISummary
+    products: List[ProductSummary]
+    chart_data: Dict[str, List[ChartPoint]]

@@ -32,8 +32,9 @@ class Sku(Base):
     __tablename__ = "sku"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    sku_code = Column(String(20), unique=True, nullable=False, index=True)
+    sku_code = Column(String(50), unique=True, nullable=False, index=True)
     description = Column(Text, nullable=True)
+    current_stock = Column(Integer, nullable=True, default=0)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 

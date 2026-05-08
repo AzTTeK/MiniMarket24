@@ -1,20 +1,27 @@
 """
 DEMAND-24 — Capa de Servicios (Service Layer)
 
-Orquestador entre los endpoints REST y los módulos internos.
-Toda lógica de negocio pasa por aquí — los endpoints son "tontos".
+Orquestador entre los endpoints REST y los modulos internos.
+Toda logica de negocio pasa por aqui — los endpoints son "tontos".
 
 Cumple con:
 - Regla I: SoC — API no toca ML directo
-- Decisión #12: Backend accede ML solo vía DemandPredictor
-- Decisión #18: Sesión BD inyectada desde capa superior
+- Decision #12: Backend accede ML solo via DemandPredictor
+- Decision #18: Sesion BD inyectada desde capa superior
 """
 
 import logging
+from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy.orm import Session
 
+from logica_negocio.api.schemas.api_schemas import (
+    ChartPoint,
+    DashboardSummary,
+    KPISummary,
+    ProductSummary,
+)
 from logica_negocio.database.repositories import (
     AlertRepository,
     ModelVersionRepository,
@@ -31,15 +38,53 @@ from logica_negocio.database.schemas import (
 
 logger = logging.getLogger(__name__)
 
+# Traduccion de familias del CSV a nombres legibles en espanol
+FAMILY_TRANSLATIONS = {
+    "AUTOMOTIVE": "Automotriz",
+    "BABY CARE": "Cuidado de Bebe",
+    "BEAUTY": "Belleza",
+    "BEVERAGES": "Bebidas",
+    "BOOKS": "Libros",
+    "BREAD/BAKERY": "Panaderia",
+    "CELEBRATION": "Celebracion",
+    "CLEANING": "Limpieza",
+    "DAIRY": "Lacteos",
+    "DELI": "Delicatessen",
+    "EGGS": "Huevos",
+    "FROZEN FOODS": "Congelados",
+    "GROCERY I": "Abarrotes I",
+    "GROCERY II": "Abarrotes II",
+    "HARDWARE": "Ferreteria",
+    "HOME AND KITCHEN I": "Hogar y Cocina I",
+    "HOME AND KITCHEN II": "Hogar y Cocina II",
+    "HOME APPLIANCES": "Electrodomesticos",
+    "HOME CARE": "Cuidado del Hogar",
+    "LADIESWEAR": "Ropa Dama",
+    "LAWN AND GARDEN": "Jardin",
+    "LINGERIE": "Lenceria",
+    "LIQUOR,WINE,BEER": "Licores y Vinos",
+    "MAGAZINES": "Revistas",
+    "MEATS": "Carnes",
+    "PERSONAL CARE": "Cuidado Personal",
+    "PET SUPPLIES": "Mascotas",
+    "PLAYERS AND ELECTRONICS": "Electronicos",
+    "POULTRY": "Aves",
+    "PREPARED FOODS": "Comida Preparada",
+    "PRODUCE": "Frutas y Verduras",
+    "SCHOOL AND OFFICE SUPPLIES": "Escolar y Oficina",
+    "SEAFOOD": "Mariscos",
+}
+
 
 class DemandService:
     """
     Capa de servicios que orquesta las operaciones del sistema DEMAND-24.
 
     Responsabilidades:
-    - Consultar SKUs, predicciones, modelos vía repositories
-    - Disparar entrenamiento vía DemandPredictor (lazy import)
-    - Gestionar alertas vía AlertEngine
+    - Consultar SKUs, predicciones, modelos via repositories
+    - Disparar entrenamiento via DemandPredictor (lazy import)
+    - Gestionar alertas via AlertEngine
+    - Generar resumen de dashboard para el frontend
     - NUNCA accede a ML internals directamente
 
     Usage:
@@ -81,7 +126,7 @@ class DemandService:
     # ── Model Operations ────────────────────────────────────────
 
     def get_latest_model(self) -> Optional[ModelVersionRead]:
-        """Obtiene la versión más reciente del modelo."""
+        """Obtiene la version mas reciente del modelo."""
         return self._model_version_repo.get_latest()
 
     def get_all_models(self) -> List[ModelVersionRead]:
@@ -94,18 +139,18 @@ class DemandService:
         """
         Dispara el pipeline completo de entrenamiento del modelo.
 
-        Flujo (Decisión Arquitectónica #9):
-            load_data → prepare_data → train → save_training_results_to_db
+        Flujo (Decision Arquitectonica #9):
+            load_data -> prepare_data -> train -> save_training_results_to_db
 
         Returns:
-            Diccionario con resultados del entrenamiento incluyendo métricas.
+            Diccionario con resultados del entrenamiento incluyendo metricas.
 
         Raises:
             RuntimeError: Si el pipeline falla en cualquier etapa.
         """
-        logger.info("Iniciando pipeline de entrenamiento vía DemandService")
+        logger.info("Iniciando pipeline de entrenamiento via DemandService")
 
-        # Lazy import para evitar acoplamiento circular (Decisión #12)
+        # Lazy import para evitar acoplamiento circular (Decision #12)
         from modulo_analitico.predictor import DemandPredictor
 
         predictor = DemandPredictor()
@@ -114,7 +159,7 @@ class DemandService:
             logger.info("Etapa 1/4: Cargando datos...")
             predictor.load_data()
 
-            logger.info("Etapa 2/4: Preparando datos (agregación + features)...")
+            logger.info("Etapa 2/4: Preparando datos (agregacion + features)...")
             predictor.prepare_data()
 
             logger.info("Etapa 3/4: Entrenando modelo...")
@@ -132,8 +177,8 @@ class DemandService:
         except FileNotFoundError as err:
             logger.error("Dataset no encontrado: %s", err)
             raise RuntimeError(
-                "No se encontró el dataset de entrenamiento. "
-                "Verifica que los archivos CSV estén en data/raw/"
+                "No se encontro el dataset de entrenamiento. "
+                "Verifica que los archivos CSV esten en data/raw/"
             ) from err
         except Exception as err:
             logger.error("Error en pipeline de entrenamiento: %s", err)
@@ -155,7 +200,7 @@ class DemandService:
         return self._alert_repo.get_all()
 
     def get_alerts_by_sku(self, sku_id: int) -> List[AlertRead]:
-        """Obtiene alertas de un SKU específico."""
+        """Obtiene alertas de un SKU especifico."""
         return self._alert_repo.get_by_sku(sku_id)
 
     def acknowledge_alert(self, alert_id: int) -> Optional[AlertRead]:
@@ -173,3 +218,183 @@ class DemandService:
 
         engine = AlertEngine(self._db)
         return engine.check_stock_alerts(stock_levels)
+
+    # ── Dashboard Operations ────────────────────────────────────
+
+    def get_dashboard_summary(self) -> DashboardSummary:
+        """
+        Genera el resumen completo del dashboard.
+
+        Combina datos de SKUs, predicciones y alertas para producir:
+        - KPIs principales (total SKUs, precision, quiebres, revision)
+        - Lista de productos con stock, demanda estimada, estado
+        - Datos de graficos (historico + proyeccion) por producto
+
+        Returns:
+            DashboardSummary con todos los datos necesarios para el frontend.
+        """
+        all_skus = self._sku_repo.get_all()
+
+        if not all_skus:
+            return DashboardSummary(
+                kpis=KPISummary(
+                    total_skus=0, model_accuracy=0.0,
+                    breakdowns=0, under_review=0,
+                ),
+                products=[],
+                chart_data={"all": []},
+            )
+
+        # Obtener predicciones agrupadas por SKU
+        predictions_by_sku: Dict[int, List[PredictionRead]] = defaultdict(list)
+        all_predictions = self._prediction_repo.get_all()
+        for pred in all_predictions:
+            predictions_by_sku[pred.sku_id].append(pred)
+
+        # Construir productos con estados
+        products: List[ProductSummary] = []
+        chart_data_all_actual: Dict[str, float] = defaultdict(float)
+        chart_data_all_projected: Dict[str, float] = defaultdict(float)
+        chart_data_by_product: Dict[str, List[ChartPoint]] = {}
+        breakdowns = 0
+        under_review = 0
+        mape_values = []
+
+        for sku in all_skus:
+            sku_preds = predictions_by_sku.get(sku.id, [])
+            sku_preds_sorted = sorted(sku_preds, key=lambda p: p.week_start)
+
+            # Calcular demanda estimada (ultima prediccion disponible)
+            latest_demand = 0
+            mape_value = None
+            if sku_preds_sorted:
+                latest_demand = int(float(sku_preds_sorted[-1].predicted_demand))
+                mape_value = float(sku_preds_sorted[-1].mape) if sku_preds_sorted[-1].mape else None
+
+            if mape_value is not None:
+                mape_values.append(mape_value)
+
+            stock = sku.current_stock or 0
+
+            # Determinar estado
+            if latest_demand > 0 and stock < latest_demand * 0.8:
+                status = "Quiebre"
+                breakdowns += 1
+            elif latest_demand > 0 and stock < latest_demand * 1.1:
+                status = "Revisar"
+                under_review += 1
+            else:
+                status = "Normal"
+
+            # Determinar confianza basada en MAPE
+            if mape_value is None:
+                confidence = "Media"
+            elif mape_value <= 15.0:
+                confidence = "Alta"
+            elif mape_value <= 25.0:
+                confidence = "Media"
+            else:
+                confidence = "Baja"
+
+            product_name = FAMILY_TRANSLATIONS.get(sku.sku_code, sku.sku_code)
+
+            products.append(ProductSummary(
+                sku_id=sku.id,
+                code=sku.sku_code,
+                product=product_name,
+                stock=stock,
+                demand=latest_demand,
+                status=status,
+                confidence=confidence,
+            ))
+
+            # Construir chart data por producto
+            product_chart = self._build_chart_points(sku_preds_sorted)
+            chart_data_by_product[product_name] = product_chart
+
+            # Acumular para grafico consolidado "all"
+            for point in product_chart:
+                if point.actual is not None:
+                    chart_data_all_actual[point.name] += point.actual
+                if point.projected is not None:
+                    chart_data_all_projected[point.name] += point.projected
+
+        # Construir chart consolidado
+        all_week_names = []
+        if products and chart_data_by_product:
+            first_product_chart = list(chart_data_by_product.values())[0]
+            all_week_names = [p.name for p in first_product_chart]
+
+        chart_all: List[ChartPoint] = []
+        for week_name in all_week_names:
+            actual_val = chart_data_all_actual.get(week_name)
+            projected_val = chart_data_all_projected.get(week_name)
+            base_val = actual_val or projected_val or 0
+            chart_all.append(ChartPoint(
+                name=week_name,
+                actual=round(actual_val, 1) if actual_val else None,
+                projected=round(projected_val, 1) if projected_val else None,
+                range=[round(base_val * 0.9, 1), round(base_val * 1.1, 1)] if base_val > 0 else None,
+            ))
+
+        chart_data_by_product["all"] = chart_all
+
+        # Calcular precision del modelo (100 - MAPE promedio)
+        avg_mape = sum(mape_values) / len(mape_values) if mape_values else 20.0
+        model_accuracy = round(max(0, 100.0 - avg_mape), 1)
+
+        return DashboardSummary(
+            kpis=KPISummary(
+                total_skus=len(all_skus),
+                model_accuracy=model_accuracy,
+                breakdowns=breakdowns,
+                under_review=under_review,
+            ),
+            products=products,
+            chart_data=chart_data_by_product,
+        )
+
+    def _build_chart_points(
+        self, predictions: List[PredictionRead]
+    ) -> List[ChartPoint]:
+        """
+        Construye puntos del grafico a partir de predicciones ordenadas.
+
+        Divide en semanas historicas (actual) y futuras (projected).
+        La prediccion mas reciente con week_start <= hoy es el punto S0.
+        """
+        if not predictions:
+            return []
+
+        from datetime import date as date_type
+
+        today = date_type.today()
+        total = len(predictions)
+
+        # Encontrar el indice de S0 (ultima semana <= hoy)
+        s0_idx = 0
+        for i, pred in enumerate(predictions):
+            if pred.week_start <= today:
+                s0_idx = i
+
+        chart_points: List[ChartPoint] = []
+
+        for i, pred in enumerate(predictions):
+            offset = i - s0_idx
+            week_label = f"S{'+' if offset > 0 else ''}{offset}" if offset != 0 else "S0"
+            demand = round(float(pred.predicted_demand), 1)
+            lower = round(float(pred.lower_bound), 1) if pred.lower_bound else round(demand * 0.9, 1)
+            upper = round(float(pred.upper_bound), 1) if pred.upper_bound else round(demand * 1.1, 1)
+
+            is_future = pred.week_start > today
+            is_transition = (offset == 0)
+
+            chart_points.append(ChartPoint(
+                name=week_label,
+                actual=demand if not is_future else None,
+                projected=demand if (is_future or is_transition) else None,
+                range=[lower, upper],
+            ))
+
+        return chart_points
+

@@ -18,6 +18,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from logica_negocio.api.routes_alerts import router as alerts_router
+from logica_negocio.api.routes_dashboard import router as dashboard_router
 from logica_negocio.api.routes_health import router as health_router
 from logica_negocio.api.routes_predictions import router as predictions_router
 from logica_negocio.api.routes_skus import router as skus_router
@@ -70,6 +71,7 @@ app.add_middleware(
 
 # ── Routers ─────────────────────────────────────────────────────
 app.include_router(health_router, prefix=API_PREFIX)
+app.include_router(dashboard_router, prefix=API_PREFIX)
 app.include_router(skus_router, prefix=API_PREFIX)
 app.include_router(predictions_router, prefix=API_PREFIX)
 app.include_router(training_router, prefix=API_PREFIX)
