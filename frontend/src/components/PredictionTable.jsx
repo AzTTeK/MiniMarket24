@@ -1,64 +1,76 @@
 import React from 'react';
+import { Package } from 'lucide-react';
 
 const PredictionTable = ({ predictions }) => {
+  if (!predictions || predictions.length === 0) {
+    return (
+      <div className="card table-card">
+        <div className="table-header">
+          <h3>Resumen de Predicciones</h3>
+        </div>
+        <table className="data-table">
+          <tbody>
+            <tr><td className="empty-table" colSpan={5}>Sin predicciones disponibles</td></tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   const getStatusBadge = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'quiebre': return <span className="badge badge-danger">Quiebre</span>;
-      case 'normal': return <span className="badge badge-success">Normal</span>;
-      case 'revisar': return <span className="badge badge-warning">Revisar</span>;
-      default: return <span className="badge">{status}</span>;
-    }
+    const map = {
+      'Quiebre': 'danger',
+      'Normal': 'success',
+      'Revisar': 'warning',
+    };
+    return map[status] || 'info';
   };
 
-  const getConfidenceColor = (level) => {
-    switch (level?.toLowerCase()) {
-      case 'alta': return 'var(--success)';
-      case 'media': return 'var(--warning)';
-      case 'baja': return 'var(--danger)';
-      default: return 'var(--text-muted)';
-    }
+  const getConfColor = (conf) => {
+    if (conf === 'Alta') return 'var(--success)';
+    if (conf === 'Media') return 'var(--warning)';
+    return 'var(--danger)';
   };
-
-  if (!predictions) return null;
 
   return (
     <div className="card table-card">
       <div className="table-header">
-        <h3>Predicciones por producto — próxima semana</h3>
+        <h3>Resumen de Predicciones</h3>
       </div>
-
       <div className="table-responsive">
         <table className="data-table">
           <thead>
             <tr>
               <th>Producto</th>
-              <th>Stock actual</th>
-              <th>Demanda proyectada</th>
-              <th>Estado</th>
+              <th style={{ textAlign: 'right' }}>Stock actual</th>
+              <th style={{ textAlign: 'right' }}>Demanda est.</th>
+              <th style={{ textAlign: 'center' }}>Estado</th>
               <th>Confianza</th>
             </tr>
           </thead>
           <tbody>
-            {predictions.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="empty-table">No hay datos disponibles</td>
+            {predictions.map((p, idx) => (
+              <tr key={idx}>
+                <td className="product-name">{p.product}</td>
+                <td style={{ textAlign: 'right' }}>
+                  <span className={`stock-cell ${p.stock < p.demand ? 'stock-low' : 'stock-ok'}`}>
+                    {p.stock} uds
+                  </span>
+                </td>
+                <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500 }}>
+                  {p.demand} uds
+                </td>
+                <td style={{ textAlign: 'center' }}>
+                  <span className={`status-badge ${getStatusBadge(p.status)}`}>{p.status}</span>
+                </td>
+                <td>
+                  <div className="confidence-cell">
+                    <span className="conf-dot" style={{ backgroundColor: getConfColor(p.confidence) }}></span>
+                    {p.confidence}
+                  </div>
+                </td>
               </tr>
-            ) : (
-              predictions.map((item, index) => (
-                <tr key={index}>
-                  <td className="product-name">{item.product}</td>
-                  <td>{item.stock} uds</td>
-                  <td>{item.demand} uds</td>
-                  <td>{getStatusBadge(item.status)}</td>
-                  <td>
-                    <div className="confidence-cell">
-                      <span className="conf-dot" style={{ background: getConfidenceColor(item.confidence) }}></span>
-                      {item.confidence}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>
