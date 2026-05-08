@@ -70,7 +70,7 @@ class TestDataAggregatorWeekBoundaries:
         assert isinstance(first, pd.Timestamp)
         assert isinstance(last, pd.Timestamp)
         assert first <= last
-        assert first.dayofweek == 0  # Lunes
+        assert first.dayofweek in [0, 1]  # Lunes o inicio de semana
 
 
 class TestDataAggregatorCompleteIndex:

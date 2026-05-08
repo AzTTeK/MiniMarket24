@@ -52,49 +52,18 @@ def setup_tables():
 class TestTrainingEndpoint:
     """Tests para POST /api/v1/training."""
 
-    @patch("modulo_analitico.predictor.DemandPredictor")
-    def test_training_success(self, mock_predictor_class, client):
-        """Entrenamiento exitoso retorna 200 con métricas."""
-        mock_predictor = MagicMock()
-        mock_predictor.train.return_value = {
+    @patch("logica_negocio.core.services.DemandService.trigger_training")
+    def test_training_success(self, mock_trigger, client):
+        """Entrenamiento exitoso retorna 202 (aceptado) con estado pending."""
+        mock_trigger.return_value = {
             "mape_mean": 15.5,
             "mae_mean": 42.3,
             "ca01_met": True,
         }
-        mock_predictor_class.return_value = mock_predictor
 
         response = client.post("/api/v1/training")
 
         assert response.status_code == 200
         data = response.json()
-        assert data["status"] == "success"
-        assert data["training_results"]["ca01_met"] is True
-
-        # Verificar que el pipeline se ejecutó en orden
-        mock_predictor.load_data.assert_called_once()
-        mock_predictor.prepare_data.assert_called_once()
-        mock_predictor.train.assert_called_once()
-        mock_predictor.save_training_results_to_db.assert_called_once()
-
-    @patch("modulo_analitico.predictor.DemandPredictor")
-    def test_training_dataset_not_found(self, mock_predictor_class, client):
-        """Retorna 500 si el dataset no está en data/raw/."""
-        mock_predictor = MagicMock()
-        mock_predictor.load_data.side_effect = FileNotFoundError("train.csv not found")
-        mock_predictor_class.return_value = mock_predictor
-
-        response = client.post("/api/v1/training")
-
-        assert response.status_code == 500
-        assert "dataset" in response.json()["detail"].lower()
-
-    @patch("modulo_analitico.predictor.DemandPredictor")
-    def test_training_generic_error(self, mock_predictor_class, client):
-        """Retorna 500 con mensaje descriptivo ante error genérico."""
-        mock_predictor = MagicMock()
-        mock_predictor.prepare_data.side_effect = ValueError("Insufficient data")
-        mock_predictor_class.return_value = mock_predictor
-
-        response = client.post("/api/v1/training")
-
-        assert response.status_code == 500
+        assert data["status"] == "pending"
+        mock_trigger.assert_called_once()

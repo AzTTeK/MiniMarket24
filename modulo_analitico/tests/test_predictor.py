@@ -257,8 +257,7 @@ class TestDemandPredictorDatabase:
             mock_eval_repo.return_value = mock_eval_instance
             
             predictor.save_training_results_to_db(
-                "v1.0.0", mock_session,
-                fold_metrics=[{"mape": 15.0, "fold_number": 1}]
+                "v1.0.0", mock_session
             )
             
             assert mock_model_instance.create.called

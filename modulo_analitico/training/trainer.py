@@ -129,10 +129,10 @@ class ModelTrainer:
         df_clean = df.copy()
         df_clean = df_clean.dropna(subset=feature_columns + [target_col])
 
-        if len(df_clean) < n_splits * 2:
+        if len(df_clean) < n_splits * 10:
             raise ValueError(
                 f"Datos insuficientes para {n_splits} folds. "
-                f"Se requieren al menos {n_splits * 2} filas, hay {len(df_clean)}."
+                f"Se requieren al menos {n_splits * 10} filas, hay {len(df_clean)}."
             )
 
         tscv = TimeSeriesSplit(n_splits=n_splits)
