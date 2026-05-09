@@ -11,9 +11,9 @@
 | **1** | **Fundación del Proyecto** |  Completada |
 | **2** | **Módulo Analítico (ML Engine)** |  Completada |
 | **3** | **Módulo de Datos (Persistencia / Supabase)** |  Completada |
-| **4** | **Orquestación & API (FastAPI)** |  En proceso |
-| **5** | **Dashboard Visual (React)** |  Pendiente |
-| **6** | **Integración & Despliegue** |  Pendiente |
+| **4** | **Orquestación & API (FastAPI)** |  Completada |
+| **5** | **Dashboard Visual (React)** |  Completada |
+| **6** | **Integración & Despliegue** |  En proceso |
 
 ---
 

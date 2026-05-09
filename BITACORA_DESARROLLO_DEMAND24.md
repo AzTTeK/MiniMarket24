@@ -951,60 +951,90 @@ Iniciar **Fase 4: REST API (FastAPI)** para exponer estos datos y procesos a tra
 
 ---
 
-**Estado Final de Sesión 5:**
-- Fase 3 COMPLETADA (100%): Supabase + Repositorios + SQLAlchemy.
-- 82/82 Tests PASS: Cobertura total de la ruta crítica.
-- Repositorio Limpio: Solo documentación profesional en GitHub.
+## Fase 4 — Orquestación & API (FastAPI)
 
----
-
-## Calidad de Código y Análisis Estático (SonarCloud)
-
-### 25 de abril de 2026 — Sesión 6: Integración con SonarCloud
+### Mayo de 2026 — Sesión 7: Construcción de la Capa de Servicios y API REST
 
 **¿Qué se hizo?**
 
-Se integró **SonarCloud** al ecosistema de desarrollo para garantizar estándares de calidad persistentes, análisis de seguridad y seguimiento de la cobertura de tests. Esta mejora permite una visión objetiva de la deuda técnica y asegura que el "Vibe" del código se mantenga sólido bajo la arquitectura modular definida.
+Se completó la Fase 4 del proyecto, transformando el motor de predicción en una plataforma accesible mediante una API REST moderna y segura. Se implementó una arquitectura de servicios para garantizar que los endpoints fueran ligeros y la lógica de negocio estuviera centralizada.
 
 **Hitos alcanzados:**
 
-1. **Configuración de Sonar Scanner**:
-   - Creación de `sonar-project.properties` con `Project Key: AzTTeK_MiniMarket24` y `Organization: azttek-1`.
-   - Definición de alcances de análisis: Incluye `logica_negocio` y `modulo_analitico`.
-   - Exclusión de carpetas de datos, notebooks y archivos de inicialización para limpiar el ruido en los reportes.
+1.  **Capa de Servicios (`DemandService`)**:
+    *   Se implementó el orquestador principal que desacopla la API del Módulo Analítico y de la Base de Datos.
+    *   Implementación de 'Lazy Imports' para evitar dependencias circulares con el módulo de ML.
+    *   Gestión de lógica de negocio: cálculo de estados de stock (Normal, Revisar, Quiebre) y niveles de confianza basados en MAPE.
 
-2. **Automatización (GitHub Actions)**:
-   - Implementación del workflow `.github/workflows/sonarcloud.yml`.
-   - Activación de análisis automático en cada `push` a `main` y en cada `Pull Request`.
-   - Integración del pipeline de tests en el análisis para inyectar reportes de cobertura automáticamente.
+2.  **API REST (FastAPI)**:
+    *   Estructura modular de routers: `health`, `auth`, `skus`, `predictions`, `training`, `alerts` y `dashboard`.
+    *   Uso de `BackgroundTasks` para el entrenamiento de modelos, permitiendo respuestas asíncronas inmediatas y evitando timeouts.
+    *   Documentación interactiva automática generada en `/docs` (Swagger UI).
 
-3. **Estandarización de Reportes de Cobertura**:
-   - Actualización de `pyproject.toml` para generar reportes en formato XML (`coverage.xml`) de forma predeterminada mediante `pytest-cov`.
-   - Esto unifica el flujo de trabajo local con el de CI, permitiendo pre-validar la calidad antes de subir cambios.
+3.  **Seguridad y Validación**:
+    *   Integración de middleware CORS para permitir peticiones desde el frontend.
+    *   Uso estricto de Pydantic DTOs para la validación de entrada/salida en todos los endpoints.
 
-4. **Verificación Local**:
-   - Ejecución exitosa de la suite completa de 82 tests con generación de reporte XML.
-   - Verificación de que el scanner reconoce correctamente los módulos críticos de la arquitectura.
-
-**Decisiones técnicas tomadas:**
-
-- **Versión de Python en CI**: Se fijó `3.11` en el workflow de GitHub Actions para coincidir con la base mínima requerida definida en el proyecto, asegurando compatibilidad total.
-- **Seguridad**: Se instruyó la configuración de `SONAR_TOKEN` vía GitHub Secrets para evitar la exposición de credenciales (cumpliendo Regla VIII).
-
-**Archivos creados/modificados:**
-
-- `sonar-project.properties` — Configuración del scanner.
-- `.github/workflows/sonarcloud.yml` — Automatización de CI.
-- `pyproject.toml` — Ajuste de parámetros de `pytest`.
-
-**Siguiente paso:**
-Monitorear el primer análisis en el dashboard de SonarCloud y resolver cualquier "Code Smell" o problema de seguridad detectado.
+**Archivos implementados:**
+*   `logica_negocio/main.py` — Punto de entrada de la aplicación.
+*   `logica_negocio/core/services.py` — Orquestador de lógica de negocio.
+*   `logica_negocio/api/routes_*.py` — Routers especializados por entidad.
 
 ---
 
-**Estado Final de Sesión 6:**
-- Integración con SonarCloud COMPLETADA.
-- Pipeline de CI/CD para calidad de código ACTIVO.
-- Reporte de cobertura XML ESTANDARIZADO.
+## Fase 5 — Visualización (Dashboard React)
+
+### Mayo de 2026 — Sesión 8: Desarrollo del Dashboard Premium
+
+**¿Qué se hizo?**
+
+Se desarrolló la interfaz de usuario de DEMAND-24, enfocada en la usabilidad y la toma de decisiones basada en datos. Se construyó una Single Page Application (SPA) moderna que consume la API del backend.
+
+**Hitos alcanzados:**
+
+1.  **UI/UX Premium**:
+    *   Diseño basado en componentes atómicos con una estética moderna (Dark Mode, Glassmorphism).
+    *   Uso de `Framer Motion` para transiciones suaves y micro-animaciones.
+    *   Visualización de datos con `Recharts`: gráficos de demanda histórica vs. proyectada con intervalos de confianza.
+
+2.  **Funcionalidad del Dashboard**:
+    *   **KPI Cards**: Resumen rápido de productos activos, precisión del modelo y riesgos.
+    *   **Centro de Riesgos**: Panel de alertas para quiebres de stock detectados por la IA.
+    *   **Catálogo Interactivo**: Gestión de inventario con indicadores visuales de nivel de stock.
+
+3.  **Integración de Autenticación**:
+    *   Conexión directa con **Supabase Auth** para manejo de sesiones, login y registro de usuarios.
+
+**Archivos implementados:**
+*   `frontend/src/App.jsx` — Lógica principal y enrutamiento visual.
+*   `frontend/src/services/api.js` — Cliente API con Axios.
+*   `frontend/src/components/` — Suite de componentes visuales reutilizables.
 
 ---
+
+## Fase 6 — Integración & Despliegue
+
+### 8-9 de Mayo de 2026 — Sesión 9: Preparación para Cloud y Despliegue en Vercel
+
+**¿Qué se hizo?**
+
+Se iniciaron los esfuerzos de despliegue a producción. El frontend fue desplegado exitosamente en Vercel, y se configuró el backend para ser servido como Serverless Functions.
+
+**Hitos alcanzados:**
+
+1.  **Configuración de Vercel**:
+    *   Creación de `vercel.json` para orquestar el build del frontend y el ruteo del backend.
+    *   Implementación de `api/index.py` como entry point para las funciones de Vercel.
+
+2.  **Pruebas de Integración (Hybrid Cloud)**:
+    *   Uso de **Localtunnel** para exponer el backend local y permitir que el frontend desplegado en Vercel pueda consumir los datos durante la fase de transición.
+
+**Desafíos identificados:**
+*   El backend de ML excede los límites de tamaño de las Serverless Functions de Vercel debido a dependencias pesadas (`xgboost`, `pandas`).
+*   **Decisión**: Evaluar alternativas como **Fly.io** o **Railway** para el despliegue del backend mediante contenedores Docker.
+
+**Estado actual**: Frontend LIVE en Vercel. Backend en proceso de migración a plataforma de contenedores.
+
+---
+
+*Este documento se actualizará al finalizar cada sesión de trabajo.*
