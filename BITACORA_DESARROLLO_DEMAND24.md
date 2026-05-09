@@ -1031,9 +1031,14 @@ Se iniciaron los esfuerzos de despliegue a producción. El frontend fue desplega
 
 **Desafíos identificados:**
 *   El backend de ML excede los límites de tamaño de las Serverless Functions de Vercel debido a dependencias pesadas (`xgboost`, `pandas`).
-*   **Decisión**: Evaluar alternativas como **Fly.io** o **Railway** para el despliegue del backend mediante contenedores Docker.
+*   **Decisión**: Se optó por **Railway.app** para el despliegue del backend debido a su facilidad de integración con Docker y su manejo eficiente de aplicaciones Python pesadas en comparación con Fly.io.
 
-**Estado actual**: Frontend LIVE en Vercel. Backend en proceso de migración a plataforma de contenedores.
+**Hitos alcanzados (Continuación):**
+3.  **Configuración de Contenedores**:
+    *   Creación de un `Dockerfile` optimizado basado en `python:3.11-slim`.
+    *   Implementación de `.dockerignore` para reducir el tamaño de la imagen y acelerar el despliegue.
+
+**Estado actual**: Frontend LIVE en Vercel. Backend configurado con Docker y listo para ser desplegado en Railway.app.
 
 ---
 

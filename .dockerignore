@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# Entornos virtuales
+.venv
+venv
+env
+__pycache__
+*.pyc
+
+# Frontend (Vercel ya lo maneja, no lo necesitamos en el contenedor del backend)
+frontend/node_modules
+frontend/dist
+.vercel
+
+# Datos y caches
+.pytest_cache
+.coverage
+coverage.xml
+mlruns/
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+
+# Documentación y otros
+Documents/
+*.md
+implementation_plan.md
+task.md
+walkthrough.md
+sonar-project.properties
+.github
