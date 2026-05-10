@@ -219,16 +219,10 @@ class FeatureBuilder:
     ) -> pd.DataFrame:
         """
         Agrega lags de ventas (valores pasados).
-        
-        Args:
-            df: DataFrame semanal
-            lag_weeks: Lista de lags a crear (ej: [1, 2, 4, 8, 52])
-        
-        Features creadas:
-        - sales_lag_1, sales_lag_2, sales_lag_4, sales_lag_8, sales_lag_52
         """
         if lag_weeks is None:
-            lag_weeks = [1, 2, 3, 4]
+            # Agregamos la semana 12 (trimestre) y 52 (anualidad) para capturar estacionalidad
+            lag_weeks = [1, 2, 3, 4, 12, 52]
 
         result = df.copy()
         result = result.sort_values(["store_nbr", "family", "week_start"])
@@ -246,17 +240,10 @@ class FeatureBuilder:
     ) -> pd.DataFrame:
         """
         Agrega estadísticas rolling de ventas.
-        
-        Args:
-            df: DataFrame semanal
-            windows: Lista de ventanas (ej: [4, 12])
-        
-        Features creadas:
-        - sales_rolling_mean_4, sales_rolling_std_4, sales_rolling_min_4, sales_rolling_max_4
-        - sales_rolling_mean_12, sales_rolling_std_12
         """
         if windows is None:
-            windows = [4, 12]
+            # Agregamos la ventana 52 para ver el comportamiento del último año completo
+            windows = [4, 12, 52]
 
         result = df.copy()
         result = result.sort_values(["store_nbr", "family", "week_start"])

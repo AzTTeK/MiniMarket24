@@ -166,6 +166,18 @@ function App() {
     const password = e.target.password.value;
     const fullName = isRegisterMode ? e.target.fullName.value : null;
 
+    // Validación estricta de contraseña solo en modo registro
+    if (isRegisterMode) {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        showToast(
+          'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, un número y un carácter especial.', 
+          'error'
+        );
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       if (isRegisterMode) {
@@ -255,34 +267,46 @@ function App() {
   );
 
   if (!isLoggedIn) return (
-    <div className="login-container">
-      <motion.div className="login-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <h1>DEMAND-24</h1>
-        <p>{isRegisterMode ? 'Crea una nueva cuenta' : 'Inicia sesión para acceder'}</p>
-        <form className="login-form" onSubmit={handleAuth}>
-          {isRegisterMode && (
+    <>
+      <div className="login-container">
+        <motion.div className="login-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <h1>DEMAND-24</h1>
+          <p>{isRegisterMode ? 'Crea una nueva cuenta' : 'Inicia sesión para acceder'}</p>
+          <form className="login-form" onSubmit={handleAuth}>
+            {isRegisterMode && (
+              <div className="form-group">
+                <label>Nombre Completo</label>
+                <input name="fullName" type="text" placeholder="Ej: Sebastian Valencia" required />
+              </div>
+            )}
             <div className="form-group">
-              <label>Nombre Completo</label>
-              <input name="fullName" type="text" placeholder="Ej: Sebastian Valencia" required />
+              <label>Correo electrónico</label>
+              <input name="email" type="email" placeholder="usuario@minimarket24.com" required />
             </div>
-          )}
-          <div className="form-group">
-            <label>Correo electrónico</label>
-            <input name="email" type="email" placeholder="usuario@minimarket24.com" required />
-          </div>
-          <div className="form-group">
-            <label>Contraseña</label>
-            <input name="password" type="password" placeholder="••••••••" required />
-          </div>
-          <button type="submit" className="btn-login" disabled={loading}>
-            {loading ? <Loader2 className="animate-spin" size={18} /> : (isRegisterMode ? 'Registrarse' : 'Ingresar')}
+            <div className="form-group">
+              <label>Contraseña</label>
+              <input name="password" type="password" placeholder="••••••••" required />
+            </div>
+            <button type="submit" className="btn-login" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin" size={18} /> : (isRegisterMode ? 'Registrarse' : 'Ingresar')}
+            </button>
+          </form>
+          <button className="btn-text" onClick={() => setIsRegisterMode(!isRegisterMode)}>
+            {isRegisterMode ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
           </button>
-        </form>
-        <button className="btn-text" onClick={() => setIsRegisterMode(!isRegisterMode)}>
-          {isRegisterMode ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-        </button>
-      </motion.div>
-    </div>
+        </motion.div>
+      </div>
+
+      {/* Renderizar notificaciones en la pantalla de Login */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div className={`toast-notification ${toast.type}`} initial={{ opacity: 0, y: 50, x: '-50%' }} animate={{ opacity: 1, y: 0, x: '-50%' }} exit={{ opacity: 0, y: 50, x: '-50%' }}>
+            {toast.type === 'success' ? <CheckCircle size={18} /> : (toast.type === 'info' ? <Shield size={18} /> : <XCircle size={18} />)}
+            <span>{toast.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 
   const renderContent = () => {
@@ -433,7 +457,6 @@ function App() {
                     <div className="detail-item"><div className="detail-label"><Shield size={14} /> Nivel de Acceso</div><div className="detail-value">Administrador</div></div>
                   </div>
                   <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-                    <button className="btn-sync" style={{ flex: 1 }}><Key size={16} /> Seguridad</button>
                     <button className="btn-sync" onClick={handleLogout} style={{ flex: 1, color: 'var(--danger)', borderColor: 'var(--danger)' }}><LogOut size={16} /> Cerrar Sesión</button>
                   </div>
                 </div>
