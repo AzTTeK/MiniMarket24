@@ -4,11 +4,8 @@
 ### Sistema Inteligente de Predicción de Demanda
 **MiniMarket La 24 S.A.S.**
 
-[![Build Status](https://github.com/AzTTeK/MiniMarket24/actions/workflows/build.yml/badge.svg)](https://github.com/AzTTeK/MiniMarket24/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=coverage)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=bugs)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=AzTTeK_MiniMarket24&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=AzTTeK_MiniMarket24)
 
@@ -54,7 +51,7 @@ frontend/                -- Dashboard (React 19 + Vite, Recharts, Framer Motion)
 **Flujo de datos:**
 
 ```
-CSV Raw Data --> DataLoader --> DataAggregator (daily->weekly)
+CSV Raw Data --> DataLoader --> DataAggregator (daily -> weekly)
              --> FeatureBuilder --> XGBoostDemandModel --> DemandPredictor
              --> FastAPI (/api/v1) --> React Dashboard
 ```
@@ -170,8 +167,6 @@ El repositorio ejecuta un pipeline de CI en GitHub Actions en cada push a `main`
 | **Elias Jose Blanco Gil** | T00078817 |
 | Mateo Reyes | T00077079 |
 | Sebastian Valencia Montesino | T00078248 |
-| Jose Pereira Acuna | T00079768 |
-| Fabian Corpas Castro | T00064976 |
 
 ---
 
