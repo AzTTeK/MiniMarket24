@@ -1,6 +1,13 @@
 # ===========================
-# DEMAND-24 .gitignore (Optimizado para Transición)
+# DEMAND-24 .gitignore
 # ===========================
+
+# ---------- Secretos y configuracion local ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 
 # ---------- Python ----------
 __pycache__/
@@ -12,10 +19,43 @@ build/
 *.egg
 .eggs/
 
-# ---------- Virtual Environments ----------
+# ---------- Entornos virtuales ----------
 venv/
 .venv/
 env/
+
+# ---------- Datos (archivos pesados y sensibles) ----------
+data/raw/
+data/processed/
+data/external/
+*.csv
+*.db
+*.sqlite
+mlruns/
+mlflow-data/
+
+# ---------- Modelos ML entrenados ----------
+modulo_analitico/models/saved/
+*.pkl
+*.joblib
+*.h5
+*.model
+*.xgb
+
+# ---------- Reportes de cobertura y tests ----------
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+
+# ---------- Frontend: dependencias y build ----------
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+.next/
+
+# ---------- Notebooks: outputs (solo se sube el codigo fuente) ----------
+notebooks/.ipynb_checkpoints/
 
 # ---------- IDE ----------
 .vscode/
@@ -29,36 +69,14 @@ env/
 Thumbs.db
 desktop.ini
 
-# ---------- Environment & Secrets ----------
-# .env  <-- PERMITIDO para la transición
-! .env
-*.pem
-*.key
-
-# ---------- Documentation ----------
-# *.md  <-- PERMITIDO para la transición
-! *.md
-
-# ---------- Data (Ignorados por peso) ----------
-data/raw/
-data/processed/
-*.csv
-*.db
-mlflow-data/
-mlruns/
-*.pkl
-*.joblib
-*.h5
-
-# ---------- Node / Frontend ----------
-node_modules/
-frontend/dist/
-frontend/build/
-.next/
-
-# ---------- Docker & Logs ----------
+# ---------- Logs ----------
 *.log
 
-# ---------- Gemini Agent ----------
+# ---------- Documentacion interna (no relevante para el despliegue) ----------
+*.md
+!README.md
+
+# ---------- Herramientas de CI/CD y agentes ----------
 .agents/
 .vercel
+scratch/
