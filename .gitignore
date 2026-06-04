@@ -2,6 +2,14 @@
 # DEMAND-24 .gitignore
 # ===========================
 
+# ---------- Carpetas internas (no necesarias para despliegue) ----------
+Documents/
+scripts/
+scratch/
+
+# ---------- Archivos sueltos de desarrollo ----------
+test_insert.py
+
 # ---------- Secretos y configuracion local ----------
 .env
 .env.*
